@@ -1069,7 +1069,6 @@ public:
         }
     }
 
-
     void anchorGenerator(float*** cl, int x, int k_max, int l_max)
     {
         const float step_x = (getAnchorRange(x, 3) - getAnchorRange(x, 0)) / (float)(l_max);
