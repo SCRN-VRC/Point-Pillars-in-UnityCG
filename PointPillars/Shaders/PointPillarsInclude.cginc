@@ -167,12 +167,14 @@ static const uint disperseArray[189] =
 
 static const float coors_range[6] =
     { 0.0f, -39.68f, -3.0f, 69.12f, 39.68f, 1.0f };
+static const float grid_size[3] = { 432.0, 496, 1.0 };
 static const float voxel_size[3] = { 0.16f, 0.16f, 4.0f };
 
 #define mod(x,y) ((x)-(y)*floor((x)/(y))) // glsl mod
 #define sc_uint2 static const uint2
 
-#define MAX_FLOAT                               1e9
+#define MAX_VOXELS                              32768
+#define MAX_FLOAT                               1e6
 #define MAX_LOOP                                21
 
 #define txSortInputLoop                         uint2(0, 0)

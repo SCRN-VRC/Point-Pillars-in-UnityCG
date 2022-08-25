@@ -85,7 +85,9 @@
                     [unroll]
                     for (int i = 0; i < 3; i++)
                         convertData[i] = floor((lidarData[i] - coors_range[i]) / voxel_size[i]);
-                    convertData.w = lidarData.w;
+                    // save a reference to the orignal points
+                    convertData.w = px.x + px.y * _InputTex_TexelSize.z;
+                    
                 }
 
                 return convertData;

@@ -1,10 +1,10 @@
-﻿Shader "PointPillars/BitonicSort"
+﻿Shader "PointPillars/InputCopy"
 {
     Properties
     {
         _ControllerTex ("Controller Texture", 2D) = "black" {}
+        _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
-        _IndexOffset ("Index Offset", Int) = 0
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -44,9 +44,9 @@
 
             //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
+            Texture2D<float4> _InputTex;
             Texture2D<float4> _LayersTex;
             float4 _LayersTex_TexelSize;
-            uint _IndexOffset;
             float _MaxDist;
 
             UNITY_INSTANCING_BUFFER_START(Props)
@@ -76,42 +76,7 @@
                 uint loopCount = _ControllerTex[txSortInputLoop];
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
 
-                uint flip = flipArray[loopCount * 9 + _IndexOffset];
-                uint disperse = disperseArray[loopCount * 9 + _IndexOffset];
-
-                if (loopCount >= MAX_LOOP)
-                {
-                    return _LayersTex[px];
-                }
-                else
-                {
-                    const uint WIDTH = _LayersTex_TexelSize.z;
-                    uint i = px.x + px.y * WIDTH;
-                    uint l = i ^ disperse;
-                    uint2 tg;
-                    tg.x = l % WIDTH;
-                    tg.y = l / WIDTH;
-
-                    // hacky way of sorting the X and Y together
-                    // we know that Y doesn't go over 500
-
-                    float cdata = l > i ?
-                        _LayersTex[px].x * 500.0 + _LayersTex[px].y :
-                        _LayersTex[tg].x * 500.0 + _LayersTex[tg].y;
-                    float tdata = l > i ?
-                        _LayersTex[tg].x * 500.0 + _LayersTex[tg].y :
-                        _LayersTex[px].x * 500.0 + _LayersTex[px].y;
-
-                    if (
-                        (((i & flip) == 0) && (cdata > tdata)) ||
-                        (((i & flip) != 0) && (cdata < tdata))
-                    )
-                    {
-                        return _LayersTex[tg];
-                    }
-
-                    return _LayersTex[px];
-                }
+                return loopCount == MAX_LOOP ? _InputTex[px] : _LayersTex[px];
             }
             ENDCG
         }
