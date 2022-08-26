@@ -6,7 +6,7 @@
         _InputTex ("Input Texture", 2D) = "black" {}
         _CounterTex ("Counter Texture", 2D) = "black" {}
         _ActiveTexelMap ("Active Texel Map", 2D) = "black" {}
-        _ActiveTexelMap2 ("Active Texel Map 2", 2D) = "black" {}
+        //_ActiveTexelMap2 ("Active Texel Map 2", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -44,10 +44,10 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            RWStructuredBuffer<float4> buffer : register(u1);
+            //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
             Texture2D<float> _ActiveTexelMap;
-            Texture2D<float> _ActiveTexelMap2;
+            //Texture2D<float> _ActiveTexelMap2;
             Texture2D<float> _CounterTex;
             Texture2D<float4> _InputTex;
             float4 _InputTex_TexelSize;
@@ -80,7 +80,7 @@
                 uint2 px = i.uv.xy * _InputTex_TexelSize.zw;
                 float loopCount = _ControllerTex[txSortInputLoop];
                 float totalCount = round((1 << 18) * _ActiveTexelMap.Load(int3(0, 0, 9)));
-                float tc2 = round((1 << 18) * _ActiveTexelMap2.Load(int3(0, 0, 9)));
+                //float tc2 = round((1 << 18) * _ActiveTexelMap2.Load(int3(0, 0, 9)));
 
                 float curID = px.x + px.y * _InputTex_TexelSize.z;
 
@@ -89,14 +89,7 @@
                     const uint dataWidth = _InputTex_TexelSize.z;
                     uint2 voxel = floor(_InputTex[px].xy);
                     float voxelCount = _CounterTex[voxel];
-                    if (curID == 0)
-                    {
-                        float test1 = _CounterTex[uint2(100, 287)];
-                        float test2 = _CounterTex[uint2(140, 275)];
-                        float test3 = _CounterTex[uint2(137, 275)];
-                        float test4 = _CounterTex[uint2(135, 275)];
-                        buffer[0] = float4(test1, test2, totalCount, tc2);
-                    }
+
                     if (voxelCount > 32)
                     {
                         float searchID = curID;
@@ -110,9 +103,9 @@
                             searchPos.y = searchID / dataWidth;
                             if (any(uint2(_InputTex[searchPos].xy) != voxel)) break;
                         }
-                        return indexCount > 32.0 ? MAX_FLOAT : _InputTex[px].zyxw;
+                        return indexCount > 32.0 ? MAX_FLOAT : _InputTex[px];
                     }
-                    else return _InputTex[px].zyxw;
+                    else return _InputTex[px];
                 }
                 return MAX_FLOAT;
             }

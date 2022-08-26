@@ -31,6 +31,7 @@
             Texture2D<float4> _LayersTex;
             Texture2D<float> _ActiveTexelMap;
             float4 _DataTex_TexelSize;
+            float4 _LayersTex_TexelSize;
 
             struct v2f
             {
@@ -49,11 +50,10 @@
                 v2f o;
                 // convert grid size to -1 to 1
                 uint2 IDtoXY;
-                const uint DataWidth = _DataTex_TexelSize.z;
+                const uint DataWidth = _LayersTex_TexelSize.z;
                 IDtoXY.x = triID % DataWidth;
                 IDtoXY.y = triID / DataWidth;
                 float2 c = _LayersTex[IDtoXY].xy;
-
                 c.xy = ((c.xy + 0.5) / _DataTex_TexelSize.zw);
                 #ifdef UNITY_UV_STARTS_AT_TOP
                 c.y = 1.0 - c.y;
