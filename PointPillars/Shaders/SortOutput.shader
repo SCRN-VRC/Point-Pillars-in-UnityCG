@@ -1,8 +1,10 @@
-﻿Shader "PointPillars/FilterAndConvertPoints"
+﻿Shader "PointPillars/SortOutput"
 {
     Properties
     {
-        _InputTex ("Input Image", 2D) = "black" {}
+        _ControllerTex ("Controller Texture", 2D) = "black" {}
+        _InputTex ("Input Texture", 2D) = "black" {}
+        _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -41,8 +43,10 @@
             };
 
             //RWStructuredBuffer<float4> buffer : register(u1);
+            Texture2D<float> _ControllerTex;
             Texture2D<float4> _InputTex;
-            float4 _InputTex_TexelSize;
+            Texture2D<float4> _LayersTex;
+            float4 _LayersTex_TexelSize;
             float _MaxDist;
 
             UNITY_INSTANCING_BUFFER_START(Props)
@@ -69,27 +73,14 @@
                 clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
 
-                uint2 px = i.uv.xy * _InputTex_TexelSize.zw;
-                float4 lidarData = _InputTex[px];
+                uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
+                float loopCount = _ControllerTex[txSortInputLoop];
 
-                bool skip = false;
-                if (lidarData[0] <= coors_range[0] || lidarData[0] >= coors_range[3]) skip = true;
-                if (lidarData[1] <= coors_range[1] || lidarData[1] >= coors_range[4]) skip = true;
-                if (lidarData[2] <= coors_range[2] || lidarData[2] >= coors_range[5]) skip = true;
-
-                float4 convertData = MAX_FLOAT;
-
-                if (!skip)
+                if (loopCount == MAX_LOOP - 1)
                 {
-                    [unroll]
-                    for (int i = 0; i < 3; i++)
-                        convertData[i] = floor((lidarData[i] - coors_range[i]) / voxel_size[i]);
-                    // save a reference to the orignal points
-                    convertData.w = px.x + px.y * _InputTex_TexelSize.z;
-                    
+                    return _InputTex[px];
                 }
-
-                return convertData;
+                return _LayersTex[px];
             }
             ENDCG
         }

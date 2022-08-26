@@ -49,16 +49,21 @@
                 v2f o;
                 // convert grid size to -1 to 1
                 uint2 IDtoXY;
-                uint DataWidth = _DataTex_TexelSize.z;
+                const uint DataWidth = _DataTex_TexelSize.z;
                 IDtoXY.x = triID % DataWidth;
                 IDtoXY.y = triID / DataWidth;
                 float2 c = _LayersTex[IDtoXY].xy;
-                c.xy = ((c.xy + 0.5) / _DataTex_TexelSize.zw) * 2.0 - 1.0;
+
+                c.xy = ((c.xy + 0.5) / _DataTex_TexelSize.zw);
+                #ifdef UNITY_UV_STARTS_AT_TOP
+                c.y = 1.0 - c.y;
+                #endif
+                c.xy = c.xy * 2.0 - 1.0;
                 o.pos = float4(c.xy, 1, 1);
                 pointStream.Append(o);
             }
             
-            float4 frag (v2f i) : SV_Target
+            float frag (v2f i) : SV_Target
             {
                 return 1.0;
             }
