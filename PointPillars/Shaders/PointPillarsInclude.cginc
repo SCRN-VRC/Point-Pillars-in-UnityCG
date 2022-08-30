@@ -111,6 +111,17 @@ static const uint4 weightsPos[106] =
     2688, 1628, 128, 1,       // rv19
 };
 
+static const uint4 layerPos1[7] = 
+{
+    0, 5120, 2048, 512,       // l1
+    2048, 5120, 1536, 512,       // l3
+    4096, 5120, 512, 512,       // l4
+    3584, 5120, 512, 512,       // l5
+    0, 5792, 128, 160,       // compress
+    0, 0, 8192, 5120,       // l6
+    0, 5632, 8192, 160,       // l7
+};
+
 /*
     Unrolled bitonic merge sort loop for a 512x512 texture
 */
@@ -191,6 +202,14 @@ void StoreValue(in uint2 txPos, in float value, inout float col,
     in uint2 fragPos)
 {
     col = all(fragPos == txPos) ? value : col;
+}
+
+float getL1(Texture2D<float> tex, uint3 off)
+{
+    uint2 pos;
+    pos.x = off.x + off.z * 512;
+    pos.y = off.y;
+    return tex[layerPos1[0] + pos];
 }
 
 #endif

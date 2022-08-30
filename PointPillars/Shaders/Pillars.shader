@@ -1,17 +1,16 @@
-﻿Shader "PointPillars/Coords"
+﻿Shader "PointPillars/Pillars"
 {
     Properties
     {
         _ControllerTex ("Controller Texture", 2D) = "black" {}
-        _InputTex ("Input Texture", 2D) = "black" {}
-        _CounterTex ("Counter Texture", 2D) = "black" {}
-        _ActiveTexelMap ("Active Texel Map", 2D) = "black" {}
-        //_ActiveTexelMap2 ("Active Texel Map 2", 2D) = "black" {}
+        _InputTex ("Input Image", 2D) = "black" {}
+        _OrigTex ("Original Points Data", 2D) = "black" {}
+        _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+2" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         ZWrite Off
         ZTest Always
         Cull Front
@@ -45,12 +44,13 @@
             };
 
             //RWStructuredBuffer<float4> buffer : register(u1);
-            Texture2D<float> _ControllerTex;
-            Texture2D<float> _ActiveTexelMap;
-            //Texture2D<float> _ActiveTexelMap2;
-            Texture2D<float> _CounterTex;
             Texture2D<float4> _InputTex;
+            Texture2D<float4> _OrigTex;
+            Texture2D<float> _LayersTex;
+            Texture2D<float> _ControllerTex;
+            float4 _LayersTex_TexelSize;
             float4 _InputTex_TexelSize;
+            float4 _OrigTex_TexelSize;
             float _MaxDist;
 
             UNITY_INSTANCING_BUFFER_START(Props)
@@ -72,40 +72,29 @@
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float frag (v2f i) : SV_Target
             {
                 clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
 
-                uint2 px = i.uv.xy * _InputTex_TexelSize.zw;
-                float loopCount = _ControllerTex[txSortInputLoop];
-                float totalCount = round((1 << 18) * _ActiveTexelMap.Load(int3(0, 0, 9)));
-                //float tc2 = round((1 << 18) * _ActiveTexelMap2.Load(int3(0, 0, 9)));
+                uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
+                uint4 renderPos = layerPos1[0];
+                bool renderArea = insideArea(renderPos, px);
+                clip(renderArea ? 1.0 : -1.0);
+                
+                const uint dWidth = _OrigTex_TexelSize.z;
+                px -= renderPos.xy;
+                uint layer = px.x / dWidth;
+                px.x = px.x % dWidth;
 
-                float curID = px.x + px.y * _InputTex_TexelSize.z;
+                float lookupID = _InputTex[px].w;
 
-                if (curID < totalCount)
+                if (lookupID < MAX_FLOAT)
                 {
-                    const uint dataWidth = _InputTex_TexelSize.z;
-                    uint2 voxel = _InputTex[px].xy;
-                    float voxelCount = _CounterTex[voxel];
-
-                    if (voxelCount > 32)
-                    {
-                        uint searchID = curID;
-                        float indexCount = 0;
-                        while (searchID > 0 && indexCount <= voxelCount)
-                        {
-                            searchID--;
-                            indexCount++;
-                            uint2 searchPos;
-                            searchPos.x = searchID % dataWidth;
-                            searchPos.y = searchID / dataWidth;
-                            if (any(uint2(_InputTex[searchPos].xy) != voxel)) break;
-                        }
-                        return indexCount > 32.0 ? MAX_FLOAT : _InputTex[px];
-                    }
-                    else return _InputTex[px];
+                    uint2 IDPos;
+                    IDPos.x = ((uint) lookupID) % dWidth;
+                    IDPos.y = ((uint) lookupID) / dWidth;
+                    return _OrigTex[IDPos][layer];
                 }
                 return MAX_FLOAT;
             }
