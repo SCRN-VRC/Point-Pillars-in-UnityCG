@@ -185,6 +185,7 @@ static const float voxel_size[3] = { 0.16f, 0.16f, 4.0f };
 
 #define MAX_FLOAT                               1e6
 #define MAX_LOOP                                21
+#define MAX_POINTS                              32
 
 #define txSortInputLoop                         uint2(0, 0)
 
@@ -204,12 +205,60 @@ void StoreValue(in uint2 txPos, in float value, inout float col,
     col = all(fragPos == txPos) ? value : col;
 }
 
+inline float sigmoid(float x)
+{
+    return 1.0f / (1.0 + exp(-x));
+}
+
+inline float relu(float x)
+{
+    return x < 0.0 ? 0.0 : x;
+}
+
+inline float batchNorm(float x, float gamma, float beta, float mean, float var)
+{
+    return ((x - mean) / sqrt(var + 0.001)) * gamma + beta;
+}
+
+float getConst(Texture2D<float> tex, uint index, uint2 off)
+{
+    return tex[weightsPos[index] + off.yx];
+}
+
+float getMeanVar(Texture2D<float> tex, uint index, uint off)
+{
+    return tex[weightsPos[index + 66] + uint2(off, 0)];
+}
+
 float getL1(Texture2D<float> tex, uint3 off)
 {
     uint2 pos;
     pos.x = off.x + off.z * 512;
     pos.y = off.y;
     return tex[layerPos1[0] + pos];
+}
+
+float getIDs(Texture2D<float> tex, uint2 off)
+{
+    return tex[layerPos1[4] + off];
+}
+
+float getL3(Texture2D<float> tex, uint3 off)
+{
+    uint2 pos;
+    pos.x = off.x + off.z * 512;
+    pos.y = off.y;
+    return tex[layerPos1[1] + pos];
+}
+
+float getL4(Texture2D<float> tex, uint2 off)
+{
+    return tex[layerPos1[2] + off];
+}
+
+float getL5(Texture2D<float> tex, uint2 off)
+{
+    return tex[layerPos1[3] + off];
 }
 
 #endif
