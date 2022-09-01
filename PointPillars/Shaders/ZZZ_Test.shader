@@ -78,13 +78,12 @@
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
 
-                bool renderArea = false;
-                for (uint i = 0; i < 7; i++)
+                for (uint i = 0; i < 17; i++)
                 {
-                    uint4 renderPos = layerPos1[i];
-                    renderArea = insideArea(renderPos, px) || renderArea;
+                    uint4 renderPos = layerPos2[i];
+                    if (insideArea(renderPos, px))
+                        return (i+1) / 18.0;
                 }
-                if (renderArea) return 1;
                 discard;
                 return 0;
             }

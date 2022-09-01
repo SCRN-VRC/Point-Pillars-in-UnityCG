@@ -122,6 +122,27 @@ static const uint4 layerPos1[7] =
     0, 5632, 8192, 160,       // l7
 };
 
+static const uint4 layerPos2[17] =
+{
+    0, 0, 3968, 3456,       // l8
+    1984, 3456, 1984, 1728,       // l9
+    3968, 0, 1984, 1728,       // l10
+    3968, 1728, 1984, 1728,       // l11
+    0, 3456, 1984, 1728,       // l12
+    3968, 3456, 1984, 864,       // l13
+    3968, 4320, 1984, 864,       // l14
+    0, 5184, 1984, 864,       // l15
+    1984, 5184, 1984, 864,       // l16
+    3968, 5184, 1984, 864,       // l17
+    0, 6048, 1984, 864,       // l18
+    5952, 4320, 992, 864,       // l19
+    5952, 0, 992, 864,       // l20
+    5952, 864, 992, 864,       // l21
+    5952, 1728, 992, 864,       // l22
+    5952, 2592, 992, 864,       // l23
+    5952, 3456, 992, 864,       // l24
+};
+
 /*
     Unrolled bitonic merge sort loop for a 512x512 texture
 */
@@ -259,6 +280,14 @@ float getL4(Texture2D<float> tex, uint2 off)
 float getL5(Texture2D<float> tex, uint2 off)
 {
     return tex[layerPos1[3] + off];
+}
+
+float getL6(Texture2D<float> tex, uint4 off)
+{
+    uint2 pos;
+    pos.x = off.x + off.z * 128;
+    pos.y = off.y + off.w * 160;
+    return tex[layerPos1[5] + pos];
 }
 
 #endif

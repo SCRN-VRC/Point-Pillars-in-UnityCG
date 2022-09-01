@@ -817,6 +817,13 @@ public:
                 concat[7] = pl4[l][m];
                 concat[8] = pl5[l][m];
 
+                if (abs(concat[0] + 0.065f) < 0.001 && abs(concat[1] - 0.005f) < 0.001)
+                {
+                    printf("%d %d\n", l, m);
+                    for (int i = 0; i < 9; i++) printf("%lf, ", concat[i]);
+                    printf("\n");
+                }
+
                 for (int n = 0; n < n_max; n++)
                 {
                     // convolve

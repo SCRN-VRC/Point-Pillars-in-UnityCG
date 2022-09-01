@@ -1,4 +1,4 @@
-﻿Shader "PointPillars/Embedding"
+﻿Shader "PointPillars/MaxPool"
 {
     Properties
     {
@@ -9,7 +9,7 @@
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+4" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+5" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         ZWrite Off
         ZTest Always
         Cull Front
@@ -74,63 +74,21 @@
                 UNITY_SETUP_INSTANCE_ID(i);
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
-                uint4 renderPos = layerPos1[5];
+                uint4 renderPos = layerPos1[6];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
                 
-                //px -= renderPos.xy;
+                px -= renderPos.xy;
 
-                uint id = getIDs(_LayersTex, px % layerPos1[4].zw);
-                if (id == 0) return 0;
+                uint m = px.x / layerPos1[4].z;
 
-                uint n = px.x / layerPos1[4].z;
-                uint m = px.y / layerPos1[4].w;
-                
-                id = id + m - 1;
-
-                uint2 idUV;
-                idUV.x = id % layerPos1[2].z;
-                idUV.y = id / layerPos1[2].z;
-
-                float concat[9];
-                concat[0] = getL4(_LayersTex, idUV);
-                concat[1] = getL5(_LayersTex, idUV);
-                concat[2] = getL1(_LayersTex, uint3(idUV, 2));
-                concat[3] = getL1(_LayersTex, uint3(idUV, 3));
-                concat[4] = getL3(_LayersTex, uint3(idUV, 0));
-                concat[5] = getL3(_LayersTex, uint3(idUV, 1));
-                concat[6] = getL3(_LayersTex, uint3(idUV, 2));
-                concat[7] = concat[0];
-                concat[8] = concat[1];
-
-                if (concat[0] == MAX_FLOAT) return 0;
-
-                // if (all(px == uint2(1, 0)))
-                // {
-                //     buffer[0] = float4(
-                //             concat[0],
-                //             concat[1],
-                //             concat[2],
-                //             concat[3]
-                //         );
-                // }
-
-                float s = 0.0;
-                for (uint i = 0; i < 9; i++)
+                float maxPool = getL6(_LayersTex, uint4(px, m, 0));
+                for (uint n = 1; n < 32; n++)
                 {
-                    s += concat[i] * getConst(_WeightsTex, 0, uint2(n, i));
+                    maxPool = max(maxPool, getL6(_LayersTex, uint4(px, m, n)));
                 }
 
-                s = batchNorm(
-                    s,
-                    getConst(_WeightsTex, 1, uint2(n, 0)),
-                    getConst(_WeightsTex, 2, uint2(n, 0)),
-                    getMeanVar(_WeightsTex, 1, n),
-                    getMeanVar(_WeightsTex, 2, n));
-
-                s = relu(s);
-
-                return s;
+                return maxPool;
             }
             ENDCG
         }
