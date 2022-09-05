@@ -781,6 +781,22 @@ public:
                 }
             }
 
+            if (l == 8383)
+            {
+                printf("sum\n");
+                for (int n = 0; n < n_max; n++)
+                {
+                    printf("%lf, ", sum[n]);
+                }
+                printf("\n");
+
+                    for (int n = 0; n < n_max; n++)
+                    {
+                        printf("%lf, ", cl[l][0][n]);
+                    }
+                    printf("\n");
+            }
+
             delete[] sum;
         }
     }
@@ -817,10 +833,10 @@ public:
                 concat[7] = pl4[l][m];
                 concat[8] = pl5[l][m];
 
-                if (abs(concat[0] + 0.065f) < 0.001 && abs(concat[1] - 0.005f) < 0.001)
+                if (l == 8383 && m == 0)
                 {
-                    printf("%d %d\n", l, m);
-                    for (int i = 0; i < 9; i++) printf("%lf, ", concat[i]);
+                    for (int i = 0; i < 9; i++)
+                        printf("%lf, ", concat[i]);
                     printf("\n");
                 }
 
@@ -1287,6 +1303,10 @@ public:
         // filter to region
         input = point_range_filter(input);
 
+        std::sort(input.begin(), input.end(), [](float* a, float* b) {
+            return (a[0] * 10000 + a[1]) < (b[0] * 10000 + b[1]);
+        });
+
         // voxelize to pillars
         int total_voxels = hard_voxelize_cpu(input, l0, l1, l2);
 
@@ -1304,6 +1324,26 @@ public:
         // embedding, convolve, batch norm, relu
         embeddingLayer(l6, l1, l3, l4, l5, const0, const1, const2, rm0, rv0,
             total_voxels, max_points, 64);
+
+        // 8383 = 0, 227, 345
+
+        //for (int i = 0; i < max_voxels; i++)
+        //{
+        //    if (l2[i] == 2) printf("%d\n", i);
+        //}
+        // 
+        printf("\nl0: %d, %d, %d\n", l0[8383][0], l0[8383][1], l0[8383][2]);
+        printf("l2: %d\n", l2[8383]);
+        printf("l4:\n");
+        for (int i = 0; i < l2[8383]; i++) {
+            printf("%lf, ", l4[8383][i]);
+        }
+        printf("\nl5:\n");
+        for (int i = 0; i < l2[8383]; i++) {
+            printf("%lf, ", l5[8383][i]);
+        }
+
+        return;
 
         // max pool
         maxPoolLayer(l7, l6, total_voxels, 64, max_points);

@@ -27,6 +27,14 @@ Material:
         m_Texture: {fileID: 8400000, guid: b705c37cf22c17d4085ddc103e75c5fc, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _CoordsTex:
+        m_Texture: {fileID: 8400000, guid: 66ab22970f035ea48890a425caa65937, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CounterTex:
+        m_Texture: {fileID: 8400000, guid: 6c8831f7589d39540b7a15e042d52aca, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}

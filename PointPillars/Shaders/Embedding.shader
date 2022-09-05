@@ -5,6 +5,8 @@
         _ControllerTex ("Controller Texture", 2D) = "black" {}
         _WeightsTex ("Baked Weights", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
+        _CoordsTex ("Grid Coords Texture", 2D) = "black" {}
+        _CounterTex ("Counter Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -42,10 +44,13 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
+            Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
+            Texture2D<float> _CounterTex;
+            float4 _CoordsTex_TexelSize;
             float4 _LayersTex_TexelSize;
             float _MaxDist;
 
@@ -92,6 +97,9 @@
                 idUV.x = id % layerPos1[2].z;
                 idUV.y = id / layerPos1[2].z;
 
+                uint2 coords = _CoordsTex[idUV];
+                if (m >= (uint) _CounterTex[coords]) return 0;
+
                 float concat[9];
                 concat[0] = getL4(_LayersTex, idUV);
                 concat[1] = getL5(_LayersTex, idUV);
@@ -105,15 +113,10 @@
 
                 if (concat[0] == MAX_FLOAT) return 0;
 
-                // if (all(px == uint2(1, 0)))
-                // {
-                //     buffer[0] = float4(
-                //             concat[0],
-                //             concat[1],
-                //             concat[2],
-                //             concat[3]
-                //         );
-                // }
+                if (all(coords.yx == uint2(227, 345)) && n == 63 && m == 0)
+                {
+                    buffer[0] = float4(concat[2], concat[3], concat[4], concat[6]);
+                }
 
                 float s = 0.0;
                 for (uint i = 0; i < 9; i++)

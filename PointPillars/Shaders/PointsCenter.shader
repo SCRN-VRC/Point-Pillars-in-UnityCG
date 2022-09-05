@@ -43,7 +43,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _ControllerTex;
@@ -111,11 +111,27 @@
                 
                 uint2 px2 = uint2(pxm, px.y);
                 uint2 curVoxel = _CoordsTex[px2].xy;
+
                 float val = gridSum(px2, curVoxel, layer, dWidth, false) +
                     gridSum(px2, curVoxel, layer, dWidth, true) + curVal;
 
+                // if (all(curVoxel.yx == uint2(227, 345)) && layer == 0)
+                // {
+                //     buffer[0][0] = val;
+                //     buffer[0][3] = curVal;
+                // }
+                // if (all(curVoxel.yx == uint2(227, 345)) && layer == 1)
+                // {
+                //     buffer[0][1] = val;
+                // }
+                // if (all(curVoxel.yx == uint2(227, 345)) && layer == 2)
+                // {
+                //     buffer[0][2] = val;
+                // }
+
                 float voxCount = _CounterTex[curVoxel];
                 val = curVal - (val / voxCount);
+
                 return val;
             }
             ENDCG
