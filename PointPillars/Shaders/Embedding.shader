@@ -90,48 +90,59 @@
 
                 uint n = px.x / layerPos1[4].z;
                 uint m = px.y / layerPos1[4].w;
-                
-                id = id + m - 1;
+
+                // only use the point max count per voxel from the first point
 
                 uint2 idUV;
+
+                id = id - 1;
+                idUV.x = id % layerPos1[2].z;
+                idUV.y = id / layerPos1[2].z;
+                
+                uint2 coords = _CoordsTex[idUV];
+                uint num_points = min(_CounterTex[coords], MAX_POINTS);
+
+                // subsequent m+ points will overflow to next voxel, resulting
+                // in wrong point count
+
+                id = id + m;
                 idUV.x = id % layerPos1[2].z;
                 idUV.y = id / layerPos1[2].z;
 
-                uint2 coords = _CoordsTex[idUV];
-                if (m >= (uint) _CounterTex[coords]) return 0;
-
-                float concat[9];
-                concat[0] = getL4(_LayersTex, idUV);
-                concat[1] = getL5(_LayersTex, idUV);
-                concat[2] = getL1(_LayersTex, uint3(idUV, 2));
-                concat[3] = getL1(_LayersTex, uint3(idUV, 3));
-                concat[4] = getL3(_LayersTex, uint3(idUV, 0));
-                concat[5] = getL3(_LayersTex, uint3(idUV, 1));
-                concat[6] = getL3(_LayersTex, uint3(idUV, 2));
-                concat[7] = concat[0];
-                concat[8] = concat[1];
-
-                if (concat[0] == MAX_FLOAT) return 0;
-
-                if (all(coords.yx == uint2(227, 345)) && n == 63 && m == 0)
-                {
-                    buffer[0] = float4(concat[2], concat[3], concat[4], concat[6]);
-                }
-
                 float s = 0.0;
-                for (uint i = 0; i < 9; i++)
+
+                if (m < num_points)
                 {
-                    s += concat[i] * getConst(_WeightsTex, 0, uint2(n, i));
+                    float concat[9];
+                    concat[0] = getL4(_LayersTex, idUV);
+                    concat[1] = getL5(_LayersTex, idUV);
+                    concat[2] = getL1(_LayersTex, uint3(idUV, 2));
+                    concat[3] = getL1(_LayersTex, uint3(idUV, 3));
+                    concat[4] = getL3(_LayersTex, uint3(idUV, 0));
+                    concat[5] = getL3(_LayersTex, uint3(idUV, 1));
+                    concat[6] = getL3(_LayersTex, uint3(idUV, 2));
+                    concat[7] = concat[0];
+                    concat[8] = concat[1];
+
+                    for (uint i = 0; i < 9; i++)
+                    {
+                        s += concat[i] * getConst(_WeightsTex, 0, uint2(i, n));
+                    }
                 }
 
                 s = batchNorm(
                     s,
                     getConst(_WeightsTex, 1, uint2(n, 0)),
                     getConst(_WeightsTex, 2, uint2(n, 0)),
-                    getMeanVar(_WeightsTex, 1, n),
-                    getMeanVar(_WeightsTex, 2, n));
+                    getMeanVar(_WeightsTex, 0, n),
+                    getMeanVar(_WeightsTex, 1, n));
 
                 s = relu(s);
+
+                if (all(coords.yx == uint2(189, 77)) && n == 63 && m == 0)
+                {
+                    buffer[0] = float4(s.xxx, m);
+                }
 
                 return s;
             }

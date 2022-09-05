@@ -243,7 +243,7 @@ inline float batchNorm(float x, float gamma, float beta, float mean, float var)
 
 float getConst(Texture2D<float> tex, uint index, uint2 off)
 {
-    return tex[weightsPos[index] + off.yx];
+    return tex[weightsPos[index] + off];
 }
 
 float getMeanVar(Texture2D<float> tex, uint index, uint off)
