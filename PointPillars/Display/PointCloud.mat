@@ -32,6 +32,7 @@ Material:
     - _Distance: 0.3
     - _MaxSize: 0.1
     - _MinSize: 0.05
+    - _Scale: 2
     - _Size: 10
     - _Speed: 1
     m_Colors: []

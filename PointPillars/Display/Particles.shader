@@ -17,6 +17,7 @@ Shader "PointPillars/Display/GPUParticles"
         _Size ("Pixel Size", Float) = 1.0
         _MinSize ("Minimum Size", Float) = 0.0001
         _MaxSize ("Maximum Size", Float) = 0.001
+        _Scale ("Heatmap Scale", Range(0.1, 10)) = 1.0
     }
     SubShader
     {
@@ -69,6 +70,7 @@ Shader "PointPillars/Display/GPUParticles"
             float _Size;
             float _MinSize;
             float _MaxSize;
+            float _Scale;
 
             float3 viridis_quintic( float x )
             {
@@ -122,11 +124,11 @@ Shader "PointPillars/Display/GPUParticles"
                 idUV.y = primitiveID / 512;
 
                 float4 pos = _MainTex[idUV];
-                pos.xyz = pos.xzy;
+                pos.xyz = float3(-pos.y, pos.z, pos.x);
 
                 if (all(pos.xyz == 0..xxx)) return;
 
-                float4 centerColor = float4(viridis_quintic(pos.w), 1.0);
+                float4 centerColor = float4(viridis_quintic(pow(pos.w, 2) * _Scale), 1.0);
 
                 float4 clipPos = UnityObjectToClipPos(float4(pos.xyz, 1));
                 float dx = (_Size ) / _ScreenParams.x * clipPos.w;

@@ -78,7 +78,7 @@
                 uint searchID = id;
                 uint count = 0;
 
-                while (searchID > 0 && count <= 32)
+                while (searchID > 0 && count <= MAX_POINTS)
                 {
                     searchID = increment ? searchID + 1 : searchID - 1;
                     count++;

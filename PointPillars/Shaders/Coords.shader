@@ -2,7 +2,7 @@
 {
     Properties
     {
-        _ControllerTex ("Controller Texture", 2D) = "black" {}
+        //_ControllerTex ("Controller Texture", 2D) = "black" {}
         _InputTex ("Input Texture", 2D) = "black" {}
         _CounterTex ("Counter Texture", 2D) = "black" {}
         _ActiveTexelMap ("Active Texel Map", 2D) = "black" {}
@@ -45,7 +45,7 @@
             };
 
             //RWStructuredBuffer<float4> buffer : register(u1);
-            Texture2D<float> _ControllerTex;
+            //Texture2D<float> _ControllerTex;
             Texture2D<float> _ActiveTexelMap;
             //Texture2D<float> _ActiveTexelMap2;
             Texture2D<float> _CounterTex;
@@ -78,7 +78,7 @@
                 UNITY_SETUP_INSTANCE_ID(i);
 
                 uint2 px = i.uv.xy * _InputTex_TexelSize.zw;
-                float loopCount = _ControllerTex[txSortInputLoop];
+                //float loopCount = _ControllerTex[txSortInputLoop];
                 float totalCount = round((1 << 18) * _ActiveTexelMap.Load(int3(0, 0, 9)));
                 //float tc2 = round((1 << 18) * _ActiveTexelMap2.Load(int3(0, 0, 9)));
 
@@ -90,7 +90,7 @@
                     uint2 voxel = _InputTex[px].xy;
                     float voxelCount = _CounterTex[voxel];
 
-                    if (voxelCount > 32)
+                    if (voxelCount > MAX_POINTS)
                     {
                         uint searchID = curID;
                         float indexCount = 0;
@@ -103,7 +103,7 @@
                             searchPos.y = searchID / dataWidth;
                             if (any(uint2(_InputTex[searchPos].xy) != voxel)) break;
                         }
-                        return indexCount > 32.0 ? MAX_FLOAT : _InputTex[px];
+                        return indexCount > MAX_POINTS ? MAX_FLOAT : _InputTex[px];
                     }
                     else return _InputTex[px];
                 }

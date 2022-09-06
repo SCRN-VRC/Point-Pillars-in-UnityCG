@@ -40,7 +40,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
             float4 _ControllerTex_TexelSize;
             float _MaxDist;
@@ -71,12 +71,42 @@
 
                 uint2 px = i.uv.xy * _ControllerTex_TexelSize.zw;
                 float sortInputLoop = _ControllerTex[txSortInputLoop];
+                float layerThread = _ControllerTex[txLayerThread];
+                float layerSum = _ControllerTex[txLayerSum];
+                float counters[3] =
+                {
+                    _ControllerTex[txLayerCounter0],
+                    _ControllerTex[txLayerCounter1],
+                    _ControllerTex[txLayerCounter2]
+                };
 
                 float col = 0.0;
 
                 sortInputLoop = (_Time.y < 0.1) ?
-                    MAX_LOOP : mod(sortInputLoop + 1.0, MAX_LOOP + 1);
+                    MAX_LOOP : mod(sortInputLoop + 1.0, MAX_LOOP + 1.0);
 
+                layerThread = sortInputLoop == MAX_LOOP ?
+                    mod(layerThread + 1.0, 3.0) : layerThread;
+                layerThread = (_Time.y < 0.1) ? 0.0 : layerThread;
+
+                [unroll]
+                for (int i = 0; i < 3; i++)
+                {
+                    counters[i] = (counters[i] >= MAX_LAYERS) ?
+                        0.0 : counters[i] + 2.0;
+                    counters[i] = (_Time.y < 0.1) ?
+                        mod(MAX_LOOP * i, MAX_LAYERS + 1.0) : counters[i];
+                }
+
+                layerSum = counters[0] + counters[1] * 100.0 + counters[2] * 10000.0;
+
+                buffer[0] = float4(sortInputLoop, layerThread, layerSum, 0);
+
+                StoreValue(txLayerCounter0, counters[0], col, px);
+                StoreValue(txLayerCounter1, counters[1], col, px);
+                StoreValue(txLayerCounter2, counters[2], col, px);
+                StoreValue(txLayerThread, layerThread, col, px);
+                StoreValue(txLayerSum, layerSum, col, px);
                 StoreValue(txSortInputLoop, sortInputLoop, col, px);
                 return col;
             }
