@@ -197,6 +197,14 @@ static const uint disperseArray[189] =
     128, 64, 32, 16, 8, 4, 2, 1, 0
 };
 
+static const uint primes[31] =
+{
+    2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+    31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+    73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
+    127
+};
+
 static const float coors_range[6] =
     { 0.0f, -39.68f, -3.0f, 69.12f, 39.68f, 1.0f };
 static const float voxel_size[3] = { 0.16f, 0.16f, 4.0f };
@@ -213,7 +221,7 @@ static const float voxel_size[3] = { 0.16f, 0.16f, 4.0f };
 #define txLayerCounter0                         uint2(1, 0)
 #define txLayerCounter1                         uint2(2, 0)
 #define txLayerThread                           uint2(3, 0)
-#define txLayerSum                              uint2(4, 0)
+#define txLayerHash                             uint2(4, 0)
 
 inline bool insideArea(in uint4 area, uint2 px)
 {

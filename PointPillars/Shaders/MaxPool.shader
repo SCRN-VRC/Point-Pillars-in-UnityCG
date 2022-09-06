@@ -77,9 +77,9 @@
                 clip(renderArea ? 1.0 : -1.0);
                 
                 float col = _LayersTex[px];
-                uint layerSum = _ControllerTex[txLayerSum];
+                uint layerHash = _ControllerTex[txLayerHash];
 
-                if (layerSum % (MAX_LAYERS + 1) == 3)
+                if (layerHash % primes[3] == 0)
                 {
                     px -= renderPos.xy;
 
@@ -91,8 +91,10 @@
                     {
                         maxPool = max(maxPool, getL6(_LayersTex, uint4(px, m, n)));
                     }
+
                     return maxPool;
                 }
+
                 return col;
             }
             ENDCG

@@ -82,9 +82,9 @@
                 clip(renderArea ? 1.0 : -1.0);
                 
                 float col = _LayersTex[px];
-                uint layerSum = _ControllerTex[txLayerSum];
+                uint layerHash = _ControllerTex[txLayerHash];
 
-                if (layerSum % (MAX_LAYERS + 1) == 1)
+                if (layerHash % primes[1] == 0)
                 {
                     px -= renderPos.xy;
 

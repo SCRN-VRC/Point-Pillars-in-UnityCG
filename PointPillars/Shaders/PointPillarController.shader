@@ -72,7 +72,7 @@
                 uint2 px = i.uv.xy * _ControllerTex_TexelSize.zw;
                 float sortInputLoop = _ControllerTex[txSortInputLoop];
                 float layerThread = _ControllerTex[txLayerThread];
-                float layerSum = _ControllerTex[txLayerSum];
+                float layerHash = _ControllerTex[txLayerHash];
                 float counters[2] =
                 {
                     _ControllerTex[txLayerCounter0],
@@ -94,22 +94,22 @@
                     counters[i] = (counters[i] >= MAX_LAYERS) ?
                         MAX_LAYERS : counters[i] + 1.0;
                     counters[i] = (_Time.y < 0.1) ?
-                        mod(MAX_LOOP * i, MAX_LAYERS + 1.0) : counters[i];
+                        MAX_LAYERS : counters[i];
                     if ((int) layerThread == i && sortInputLoop == MAX_LOOP)
                     {
                         counters[i] = 0.0;
                     }
                 }
 
-                layerSum = counters[0] + counters[1] * 100.0;
+                layerHash = primes[(uint) counters[0]] * primes[(uint) counters[1]];
 
                 //if (sortInputLoop == MAX_LOOP)
-                //    buffer[0] = float4(layerThread, layerSum, counters[0], counters[1]);
+                //    buffer[0] = float4(layerThread, layerHash, counters[0], counters[1]);
 
                 StoreValue(txLayerCounter0, counters[0], col, px);
                 StoreValue(txLayerCounter1, counters[1], col, px);
                 StoreValue(txLayerThread, layerThread, col, px);
-                StoreValue(txLayerSum, layerSum, col, px);
+                StoreValue(txLayerHash, layerHash, col, px);
                 StoreValue(txSortInputLoop, sortInputLoop, col, px);
                 return col;
             }

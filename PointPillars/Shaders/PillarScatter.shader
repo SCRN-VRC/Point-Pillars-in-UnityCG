@@ -1,10 +1,10 @@
-﻿Shader "PointPillars/Counter"
+﻿Shader "PointPillars/PillarScatter"
 {
     Properties
     {
-        _DataTex ("Output Texture", 2D) = "black" {}
+        _CoordsTex ("Grid Coords Texture", 2D) = "black" {}
+        _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
-        _ActiveTexelMap ("Active Texel Map", 2D) = "black" {}
     }
     SubShader
     {
@@ -14,7 +14,7 @@
             "Queue" = "Transparent+2000"
             "DisableBatching"="True"
         }
-        Blend One One
+        Blend Off
 
         Pass
         {
@@ -26,16 +26,19 @@
             #pragma fragment frag
             #pragma target 5.0
 
+            #include "PointPillarsInclude.cginc"
+
             //RWStructuredBuffer<float4> buffer : register(u1);
-            Texture2D _DataTex;
-            Texture2D<float4> _LayersTex;
-            Texture2D<float> _ActiveTexelMap;
-            float4 _DataTex_TexelSize;
+            Texture2D<float> _LayersTex;
+            Texture2D<float> _InputTex;
+            Texture2D<float4> _CoordsTex;
             float4 _LayersTex_TexelSize;
+            float4 _InputTex_TexelSize;
 
             struct v2f
             {
                 float4 pos : SV_POSITION;
+                float data : TEXCOORD0;
             };
             
             void empty() {}
@@ -43,29 +46,44 @@
             [maxvertexcount(1)]
             void geom(triangle v2f i[3], inout PointStream<v2f> pointStream, uint triID : SV_PrimitiveID)
             {
-                uint count = round((1 << 18) * _ActiveTexelMap.Load(int3(0, 0, 9)));
-                //buffer[0] = count;
-                if(any(_ScreenParams.xy != abs(_DataTex_TexelSize.zw)) || triID >= count)
+                if (any(_ScreenParams.xy != abs(_LayersTex_TexelSize.zw)))
                     return;
-                v2f o;
+
+                uint2 px;
+                const uint DataWidth = _InputTex_TexelSize.z;
+                px.x = triID % DataWidth;
+                px.y = triID / DataWidth;
+                uint m = px.x / layerPos1[4].z;
+
+                uint2 idUV = px % layerPos1[4].zw;
+                uint id = getIDs(_InputTex, idUV);
+                if (id == 0) return;
+
+                id = id - 1;
+                idUV.x = id % layerPos1[2].z;
+                idUV.y = id / layerPos1[2].z;
+                
+                float2 coords = _CoordsTex[idUV].yx;
+                float data = _InputTex[layerPos1[6] + px];
+
+                coords.x = coords.x + (float) ((m % 8) * 496);
+                coords.y = coords.y + (float) ((m / 8) * 432);
+
                 // convert grid size to -1 to 1
-                uint2 IDtoXY;
-                const uint DataWidth = _LayersTex_TexelSize.z;
-                IDtoXY.x = triID % DataWidth;
-                IDtoXY.y = triID / DataWidth;
-                float2 c = _LayersTex[IDtoXY].xy;
-                c.xy = ((c.xy + 0.5) / _DataTex_TexelSize.zw);
+                coords.xy = ((coords.xy + 0.5) / _LayersTex_TexelSize.zw);
                 #ifdef UNITY_UV_STARTS_AT_TOP
-                c.y = 1.0 - c.y;
+                coords.y = 1.0 - coords.y;
                 #endif
-                c.xy = c.xy * 2.0 - 1.0;
-                o.pos = float4(c.xy, 1, 1);
+                coords.xy = coords.xy * 2.0 - 1.0;
+                v2f o;
+                o.pos = float4(coords.xy, 1, 1);
+                o.data = data;
                 pointStream.Append(o);
             }
             
             float frag (v2f i) : SV_Target
             {
-                return 1.0;
+                return i.data;
             }
             ENDCG
         }
