@@ -3,7 +3,6 @@
     Properties
     {
         _ControllerTex ("Controller Texture", 2D) = "black" {}
-        _WeightsTex ("Baked Weights", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
@@ -44,7 +43,6 @@
 
             //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
-            Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
             float _MaxDist;

@@ -113,13 +113,13 @@ static const uint4 weightsPos[106] =
 
 static const uint4 layerPos1[7] = 
 {
-    0, 5120, 2048, 512,       // l1
-    2048, 5120, 1536, 512,       // l3
-    4096, 5120, 512, 512,       // l4
-    3584, 5120, 512, 512,       // l5
-    4608, 5120, 128, 160,       // compress
-    0, 0, 8192, 5120,       // l6
-    0, 5632, 8192, 160,       // l7
+    0, 4096, 2048, 512,       // l1
+    2048, 4096, 1536, 512,       // l3
+    4096, 4096, 512, 512,       // l4
+    3584, 4096, 512, 512,       // l5
+    4608, 4096, 128, 128,       // compress
+    0, 0, 8192, 4096,       // l6
+    0, 4608, 8192, 128,       // l7
 };
 
 static const uint4 layerPos2[17] =
@@ -285,8 +285,8 @@ float getL5(Texture2D<float> tex, uint2 off)
 float getL6(Texture2D<float> tex, uint4 off)
 {
     uint2 pos;
-    pos.x = off.x + off.z * 128;
-    pos.y = off.y + off.w * 160;
+    pos.x = off.x + off.z * layerPos1[4].z;
+    pos.y = off.y + off.w * layerPos1[4].w;
     return tex[layerPos1[5] + pos];
 }
 

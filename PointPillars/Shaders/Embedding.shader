@@ -4,9 +4,9 @@
     {
         _ControllerTex ("Controller Texture", 2D) = "black" {}
         _WeightsTex ("Baked Weights", 2D) = "black" {}
-        _LayersTex ("Layers Texture", 2D) = "black" {}
         _CoordsTex ("Grid Coords Texture", 2D) = "black" {}
         _CounterTex ("Counter Texture", 2D) = "black" {}
+        _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
