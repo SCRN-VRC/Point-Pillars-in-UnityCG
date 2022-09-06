@@ -83,68 +83,75 @@
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
                 
-                //px -= renderPos.xy;
+                float col = _LayersTex[px];
+                uint layerSum = _ControllerTex[txLayerSum];
 
-                uint id = getIDs(_LayersTex, px % layerPos1[4].zw);
-                if (id == 0) return 0;
-
-                uint n = px.x / layerPos1[4].z;
-                uint m = px.y / layerPos1[4].w;
-
-                // only use the point max count per voxel from the first point
-
-                uint2 idUV;
-
-                id = id - 1;
-                idUV.x = id % layerPos1[2].z;
-                idUV.y = id / layerPos1[2].z;
-                
-                uint2 coords = _CoordsTex[idUV];
-                uint num_points = min(_CounterTex[coords], MAX_POINTS);
-
-                // subsequent m+ points will overflow to next voxel, resulting
-                // in wrong point count
-
-                id = id + m;
-                idUV.x = id % layerPos1[2].z;
-                idUV.y = id / layerPos1[2].z;
-
-                float s = 0.0;
-
-                if (m < num_points)
+                if (layerSum % (MAX_LAYERS + 1) == 2)
                 {
-                    float concat[9];
-                    concat[0] = getL4(_LayersTex, idUV);
-                    concat[1] = getL5(_LayersTex, idUV);
-                    concat[2] = getL1(_LayersTex, uint3(idUV, 2));
-                    concat[3] = getL1(_LayersTex, uint3(idUV, 3));
-                    concat[4] = getL3(_LayersTex, uint3(idUV, 0));
-                    concat[5] = getL3(_LayersTex, uint3(idUV, 1));
-                    concat[6] = getL3(_LayersTex, uint3(idUV, 2));
-                    concat[7] = concat[0];
-                    concat[8] = concat[1];
+                    //px -= renderPos.xy;
 
-                    for (uint i = 0; i < 9; i++)
+                    uint id = getIDs(_LayersTex, px % layerPos1[4].zw);
+                    if (id == 0) return 0;
+
+                    uint n = px.x / layerPos1[4].z;
+                    uint m = px.y / layerPos1[4].w;
+
+                    // only use the point max count per voxel from the first point
+
+                    uint2 idUV;
+
+                    id = id - 1;
+                    idUV.x = id % layerPos1[2].z;
+                    idUV.y = id / layerPos1[2].z;
+                    
+                    uint2 coords = _CoordsTex[idUV];
+                    uint num_points = min(_CounterTex[coords], MAX_POINTS);
+
+                    // subsequent m+ points will overflow to next voxel, resulting
+                    // in wrong point count
+
+                    id = id + m;
+                    idUV.x = id % layerPos1[2].z;
+                    idUV.y = id / layerPos1[2].z;
+
+                    float s = 0.0;
+
+                    if (m < num_points)
                     {
-                        s += concat[i] * getConst(_WeightsTex, 0, uint2(i, n));
+                        float concat[9];
+                        concat[0] = getL4(_LayersTex, idUV);
+                        concat[1] = getL5(_LayersTex, idUV);
+                        concat[2] = getL1(_LayersTex, uint3(idUV, 2));
+                        concat[3] = getL1(_LayersTex, uint3(idUV, 3));
+                        concat[4] = getL3(_LayersTex, uint3(idUV, 0));
+                        concat[5] = getL3(_LayersTex, uint3(idUV, 1));
+                        concat[6] = getL3(_LayersTex, uint3(idUV, 2));
+                        concat[7] = concat[0];
+                        concat[8] = concat[1];
+
+                        for (uint i = 0; i < 9; i++)
+                        {
+                            s += concat[i] * getConst(_WeightsTex, 0, uint2(i, n));
+                        }
                     }
+
+                    s = batchNorm(
+                        s,
+                        getConst(_WeightsTex, 1, uint2(n, 0)),
+                        getConst(_WeightsTex, 2, uint2(n, 0)),
+                        getMeanVar(_WeightsTex, 0, n),
+                        getMeanVar(_WeightsTex, 1, n));
+
+                    s = relu(s);
+
+                    // if (all(coords.yx == uint2(189, 77)) && n == 63 && m == 0)
+                    // {
+                    //     buffer[0] = float4(s.xxx, m);
+                    // }
+
+                    return s;
                 }
-
-                s = batchNorm(
-                    s,
-                    getConst(_WeightsTex, 1, uint2(n, 0)),
-                    getConst(_WeightsTex, 2, uint2(n, 0)),
-                    getMeanVar(_WeightsTex, 0, n),
-                    getMeanVar(_WeightsTex, 1, n));
-
-                s = relu(s);
-
-                // if (all(coords.yx == uint2(189, 77)) && n == 63 && m == 0)
-                // {
-                //     buffer[0] = float4(s.xxx, m);
-                // }
-
-                return s;
+                return col;
             }
             ENDCG
         }

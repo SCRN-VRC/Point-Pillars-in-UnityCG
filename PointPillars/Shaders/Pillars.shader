@@ -81,22 +81,29 @@
                 uint4 renderPos = layerPos1[0];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
-                
-                const uint dWidth = _OrigTex_TexelSize.z;
-                px -= renderPos.xy;
-                uint layer = px.x / dWidth;
-                px.x = px.x % dWidth;
 
-                float lookupID = _InputTex[px].w;
+                float col = _LayersTex[px];
+                uint layerSum = _ControllerTex[txLayerSum];
 
-                if (lookupID < MAX_FLOAT)
+                if (layerSum % (MAX_LAYERS + 1) == 0)
                 {
-                    uint2 IDPos;
-                    IDPos.x = ((uint) lookupID) % dWidth;
-                    IDPos.y = ((uint) lookupID) / dWidth;
-                    return _OrigTex[IDPos][layer];
+                    const uint dWidth = _OrigTex_TexelSize.z;
+                    px -= renderPos.xy;
+                    uint layer = px.x / dWidth;
+                    px.x = px.x % dWidth;
+
+                    float lookupID = _InputTex[px].w;
+
+                    if (lookupID < MAX_FLOAT)
+                    {
+                        uint2 IDPos;
+                        IDPos.x = ((uint) lookupID) % dWidth;
+                        IDPos.y = ((uint) lookupID) / dWidth;
+                        return _OrigTex[IDPos][layer];
+                    }
+                    return MAX_FLOAT;
                 }
-                return MAX_FLOAT;
+                return col;
             }
             ENDCG
         }

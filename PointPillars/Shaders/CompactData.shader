@@ -179,14 +179,21 @@
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
                 
-                px -= renderPos.xy;
+                float col = _LayersTex[px];
+                uint layerSum = _ControllerTex[txLayerSum];
 
-                int2 uv = ActiveTexelIndexToUV(px.x + px.y * renderPos.z);
-                if (uv.x == -1)
+                if (layerSum % (MAX_LAYERS + 1) == 2)
                 {
-                    return 0;
+                    px -= renderPos.xy;
+
+                    int2 uv = ActiveTexelIndexToUV(px.x + px.y * renderPos.z);
+                    if (uv.x == -1)
+                    {
+                        return 0;
+                    }
+                    return _DataTex[uv];
                 }
-                return _DataTex[uv];
+                return col;
             }
             ENDCG
         }

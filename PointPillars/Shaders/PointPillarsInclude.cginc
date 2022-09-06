@@ -207,14 +207,13 @@ static const float voxel_size[3] = { 0.16f, 0.16f, 4.0f };
 #define MAX_FLOAT                               1e6
 #define MAX_LOOP                                21
 #define MAX_POINTS                              32
-#define MAX_LAYERS                              50
+#define MAX_LAYERS                              30
 
 #define txSortInputLoop                         uint2(0, 0)
 #define txLayerCounter0                         uint2(1, 0)
 #define txLayerCounter1                         uint2(2, 0)
-#define txLayerCounter2                         uint2(3, 0)
-#define txLayerThread                           uint2(4, 0)
-#define txLayerSum                              uint2(5, 0)
+#define txLayerThread                           uint2(3, 0)
+#define txLayerSum                              uint2(4, 0)
 
 inline bool insideArea(in uint4 area, uint2 px)
 {

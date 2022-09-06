@@ -100,25 +100,32 @@
                 uint4 renderPos = layerPos1[1];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
-                
-                px -= renderPos.xy;
-                uint dWidth = _CoordsTex_TexelSize.w;
-                uint layer = px.x / dWidth;
-                uint pxm = px.x % dWidth;
 
-                float curVal = getL1(_LayersTex, uint3(pxm, px.y, layer));
-                if (curVal == MAX_FLOAT) return MAX_FLOAT;
-                
-                uint2 px2 = uint2(pxm, px.y);
-                uint2 curVoxel = _CoordsTex[px2].xy;
+                float col = _LayersTex[px];
+                uint layerSum = _ControllerTex[txLayerSum];
 
-                float val = gridSum(px2, curVoxel, layer, dWidth, false) +
-                    gridSum(px2, curVoxel, layer, dWidth, true) + curVal;
+                if (layerSum % (MAX_LAYERS + 1) == 0)
+                {
+                    px -= renderPos.xy;
+                    uint dWidth = _CoordsTex_TexelSize.w;
+                    uint layer = px.x / dWidth;
+                    uint pxm = px.x % dWidth;
 
-                float voxCount = _CounterTex[curVoxel];
-                val = curVal - (val / voxCount);
+                    float curVal = getL1(_LayersTex, uint3(pxm, px.y, layer));
+                    if (curVal == MAX_FLOAT) return MAX_FLOAT;
+                    
+                    uint2 px2 = uint2(pxm, px.y);
+                    uint2 curVoxel = _CoordsTex[px2].xy;
 
-                return val;
+                    float val = gridSum(px2, curVoxel, layer, dWidth, false) +
+                        gridSum(px2, curVoxel, layer, dWidth, true) + curVal;
+
+                    float voxCount = _CounterTex[curVoxel];
+                    val = curVal - (val / voxCount);
+
+                    return val;
+                }
+                return col;
             }
             ENDCG
         }

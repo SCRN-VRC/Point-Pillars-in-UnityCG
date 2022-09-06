@@ -81,15 +81,22 @@
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
                 
-                px -= renderPos.xy;
+                float col = _LayersTex[px];
+                uint layerSum = _ControllerTex[txLayerSum];
 
-                float val = getL1(_LayersTex, uint3(px, _ID));
-                if (val == MAX_FLOAT) return MAX_FLOAT;
+                if (layerSum % (MAX_LAYERS + 1) == 1)
+                {
+                    px -= renderPos.xy;
 
-                float coords = _CoordsTex[px][_ID] * voxel_size[_ID] +
-                    voxel_size[_ID] * 0.5 + coors_range[_ID];
+                    float val = getL1(_LayersTex, uint3(px, _ID));
+                    if (val == MAX_FLOAT) return MAX_FLOAT;
 
-                return val - coords;
+                    float coords = _CoordsTex[px][_ID] * voxel_size[_ID] +
+                        voxel_size[_ID] * 0.5 + coors_range[_ID];
+
+                    return val - coords;
+                }
+                return col;
             }
             ENDCG
         }
