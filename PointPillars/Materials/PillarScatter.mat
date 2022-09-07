@@ -23,6 +23,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ControllerTex:
+        m_Texture: {fileID: 8400000, guid: b705c37cf22c17d4085ddc103e75c5fc, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CoordsTex:
         m_Texture: {fileID: 8400000, guid: 66ab22970f035ea48890a425caa65937, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -43,8 +47,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _LayersTex:
+    - _InputTex:
         m_Texture: {fileID: 8400000, guid: b977641617ad42945a01f218a80a3988, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LayersTex:
+        m_Texture: {fileID: 8400000, guid: c635da8c29c26e045ba6f2e5f016ed31, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:

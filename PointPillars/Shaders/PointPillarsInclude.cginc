@@ -239,24 +239,52 @@ void StoreValue(in uint2 txPos, in float value, inout float col,
     col = all(fragPos == txPos) ? value : col;
 }
 
-inline float sigmoid(float x)
+float sigmoid(float x)
 {
     return 1.0f / (1.0 + exp(-x));
 }
 
-inline float relu(float x)
+float relu(float x)
 {
     return x < 0.0 ? 0.0 : x;
 }
 
-inline float batchNorm(float x, float gamma, float beta, float mean, float var)
+float batchNorm(float x, float gamma, float beta, float mean, float var)
 {
     return ((x - mean) / sqrt(var + 0.001)) * gamma + beta;
+}
+
+float getLayer(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
+{
+    uint2 pos;
+    pos.x = input.x + (input.z % off.x) * off.z;
+    pos.y = input.y + (input.z / off.y) * off.w;
+    return tex[layerPos2[layer] + pos];
+}
+
+float padLayerUneven(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
+{
+    if (input.x == 0 || input.y == 0) return 0.0f;
+    return getLayer(tex, layer, off, uint3(input.xy - 1, input.z));
+}
+
+float padLayerEven(Texture2D<float> tex, uint layer, uint4 off, uint2 xyMax, uint3 input)
+{
+    if (input.x == 0 || input.y == 0 || input.x >= xyMax.x || input.y >= xyMax.y) return 0.0f;
+    return getLayer(tex, layer, off, uint3(input.xy - 1, input.z));
 }
 
 float getConst(Texture2D<float> tex, uint index, uint2 off)
 {
     return tex[weightsPos[index] + off];
+}
+
+float getConst(Texture2D<float> tex, uint index, uint4 off)
+{
+    uint2 pos;
+    pos.x = off.w + off.z * 3 + off.y * 9;
+    pos.y = off.x;
+    return tex[weightsPos[index] + pos];
 }
 
 float getMeanVar(Texture2D<float> tex, uint index, uint off)

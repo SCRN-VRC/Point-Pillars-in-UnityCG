@@ -781,22 +781,6 @@ public:
                 }
             }
 
-            //if (l == 8383)
-            //{
-            //    printf("sum\n");
-            //    for (int n = 0; n < n_max; n++)
-            //    {
-            //        printf("%lf, ", sum[n]);
-            //    }
-            //    printf("\n");
-
-            //        for (int n = 0; n < n_max; n++)
-            //        {
-            //            printf("%lf, ", cl[l][0][n]);
-            //        }
-            //        printf("\n");
-            //}
-
             delete[] sum;
         }
     }
@@ -832,13 +816,6 @@ public:
                 concat[6] = pl3[l][m][2];
                 concat[7] = pl4[l][m];
                 concat[8] = pl5[l][m];
-
-                //if (l == 8383 && m == 0)
-                //{
-                //    for (int i = 0; i < 9; i++)
-                //        printf("%lf, ", concat[i]);
-                //    printf("\n");
-                //}
 
                 for (int n = 0; n < n_max; n++)
                 {
@@ -1325,33 +1302,6 @@ public:
         embeddingLayer(l6, l1, l3, l4, l5, const0, const1, const2, rm0, rv0,
             total_voxels, max_points, 64);
 
-        // 8383 = 0, 227, 345
-
-        //for (int i = 0; i < max_voxels; i++)
-        //{
-        //    if (l2[i] == 2) printf("%d\n", i);
-        //}
-        // 
-        printf("\nl0: %d, %d, %d\n", l0[5544][0], l0[5544][1], l0[5544][2]);
-        printf("l2: %d\n", l2[5544]);
-        //printf("l4:\n");
-        //for (int i = 0; i < l2[8383]; i++) {
-        //    printf("%lf, ", l4[8383][i]);
-        //}
-        //printf("\nl5:\n");
-        //for (int i = 0; i < l2[8383]; i++) {
-        //    printf("%lf, ", l5[8383][i]);
-        //}
-
-        printf("l6: %lf\n", l6[5544][5][63]);
-        printf("const0: %lf\n", const0[63][8]);
-        printf("const1: %lf\n", const1[63]);
-        printf("const2: %lf\n", const2[63]);
-        printf("rm0: %lf\n", rm0[63]);
-        printf("rv0: %lf\n", rv0[63]);
-
-        return;
-
         // max pool
         maxPoolLayer(l7, l6, total_voxels, 64, max_points);
         
@@ -1393,6 +1343,13 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+		//for (int i = 0; i < 248; i++)
+		//	for (int j = 0; j < 216; j++)
+		//		if (l12[63][i][j] > 0.0f) printf("%d, %d\n", i, j);
+        printf("l12: %lf\n", l12[63][137][88]);
+        return;
+
 
         // conv + batch norm + relu
         for (int k = 0; k < 128; k++) {

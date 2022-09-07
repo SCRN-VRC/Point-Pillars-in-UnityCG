@@ -2,6 +2,7 @@
 {
     Properties
     {
+        _ControllerTex ("Controller Texture", 2D) = "black" {}
         _CoordsTex ("Grid Coords Texture", 2D) = "black" {}
         _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
@@ -11,7 +12,7 @@
         Tags
         {
             "RenderType" = "Transparent"
-            "Queue" = "Transparent+2000"
+            "Queue" = "Overlay+2"
             "DisableBatching"="True"
         }
         Blend Off
@@ -29,9 +30,10 @@
             #include "PointPillarsInclude.cginc"
 
             //RWStructuredBuffer<float4> buffer : register(u1);
+            Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _InputTex;
-            Texture2D<float4> _CoordsTex;
+            Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
             float4 _InputTex_TexelSize;
 
@@ -46,8 +48,9 @@
             [maxvertexcount(1)]
             void geom(triangle v2f i[3], inout PointStream<v2f> pointStream, uint triID : SV_PrimitiveID)
             {
-                if (any(_ScreenParams.xy != abs(_LayersTex_TexelSize.zw)))
-                    return;
+                if (any(_ScreenParams.xy != abs(_LayersTex_TexelSize.zw))) return;
+                uint layerHash = _ControllerTex[txLayerHash];
+                if (layerHash % primes[4] != 0) return;
 
                 uint2 px;
                 const uint DataWidth = _InputTex_TexelSize.z;
