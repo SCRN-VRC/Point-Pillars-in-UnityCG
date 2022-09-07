@@ -14,14 +14,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+2" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -142,7 +142,7 @@
 
                     s = relu(s);
 
-                    // if (l == 137 && m == 88 && k == 63 && _PrevCurLayerIDLoop.y == 4)
+                    // if (l == 69 && m == 48 && k == 127 && _PrevCurLayerIDLoop.y == 6)
                     // {
                     //     buffer[0] = s;
                     // }

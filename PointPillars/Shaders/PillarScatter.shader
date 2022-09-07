@@ -50,7 +50,7 @@
             {
                 if (any(_ScreenParams.xy != abs(_LayersTex_TexelSize.zw))) return;
                 uint layerHash = _ControllerTex[txLayerHash];
-                if (layerHash % primes[4] != 0) return;
+                if (layerHash % primes[3] != 0) return;
 
                 uint2 px;
                 const uint DataWidth = _InputTex_TexelSize.z;

@@ -91,6 +91,6 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LayerOffsets: {r: 8, g: 8, b: 248, a: 216}
     - _PrevCurLayerID: {r: 0, g: 1, b: 4, a: 0}
-    - _PrevCurLayerIDLoop: {r: 2, g: 3, b: 5, a: 64}
+    - _PrevCurLayerIDLoop: {r: 2, g: 3, b: 6, a: 64}
     - _WeightBiasMeanVar: {r: 3, g: 4, b: 2, a: 3}
     - _WeightNormMeanVar: {r: 9, g: 10, b: 11, a: 6}

@@ -1344,13 +1344,6 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
-		//for (int i = 0; i < 248; i++)
-		//	for (int j = 0; j < 216; j++)
-		//		if (l12[63][i][j] > 0.0f) printf("%d, %d\n", i, j);
-        printf("l12: %lf\n", l12[63][137][88]);
-        return;
-
-
         // conv + batch norm + relu
         for (int k = 0; k < 128; k++) {
             thread t(&pillar::conv3Stride2PadLeft, this, l13, l12, const15, const16, const17,
@@ -1368,6 +1361,12 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        //for (int i = 0; i < 124; i++)
+        //	for (int j = 0; j < 108; j++)
+        //		if (l13[127][i][j] > 0.0f) printf("%d, %d\n", i, j);
+        printf("l14: %lf\n", l14[127][69][48]);
+        return;
 
         // conv + batch norm + relu
         for (int k = 0; k < 128; k++) {

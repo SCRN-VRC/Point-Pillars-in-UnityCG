@@ -14,14 +14,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+2" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -46,7 +46,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
             Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
@@ -142,7 +142,7 @@
 
                     s = relu(s);
 
-                    // if (l == 90 && m == 200 && k == 63)
+                    // if (l == 69 && m == 48 && k == 127 && _PrevCurLayerIDLoop.y == 5)
                     // {
                     //     buffer[0] = s;
                     // }
