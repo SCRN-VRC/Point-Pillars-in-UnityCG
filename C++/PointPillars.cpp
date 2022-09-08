@@ -892,7 +892,7 @@ public:
                 // batch norm
                 s = batchNorm(s, gamma[k], beta[k], mean[k], var[k]);
                 // activation
-                //s = relu(s);
+                s = relu(s);
 
                 cl[k][l][m] = s;
             }
@@ -927,7 +927,7 @@ public:
                 // batch norm
                 s = batchNorm(s, gamma[k], beta[k], mean[k], var[k]);
                 // activation
-                //s = relu(s);
+                s = relu(s);
 
                 cl[k][l][m] = s;
             }
@@ -1443,19 +1443,6 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
-        ////for (int i = 0; i < 124; i++)
-        ////	for (int j = 0; j < 108; j++)
-        ////		if (l13[101][i][j] > 0.0f) printf("%d, %d\n", i, j);
-        //printf("l9: %lf\n", l9[55][201][188]);
-        //printf("l10: %lf\n", l10[55][201][188]);
-        //printf("l11: %lf\n", l11[55][201][188]);
-        //printf("l13: %lf\n", l13[127][110][106]);
-        //printf("l14: %lf\n", l14[127][110][106]);
-        ////printf("l15: %lf\n", l15[127][110][106]);
-        ////printf("l16: %lf\n", l16[127][119][105]);
-        printf("l20: %lf\n", l21[223][51][32]);
-        return;
-
         // conv + batch norm + relu
         for (int k = 0; k < 256; k++) {
             thread t(&pillar::conv3Stride1PadEven, this, l24, l23, const48, const49, const50,
@@ -1464,6 +1451,19 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        for (int i = 0; i < 62; i++)
+        	for (int j = 0; j < 54; j++)
+        		if (l24[223][i][j] > 0.0f) printf("%d, %d\n", i, j);
+        //printf("l9: %lf\n", l9[55][201][188]);
+        //printf("l10: %lf\n", l10[55][201][188]);
+        //printf("l11: %lf\n", l11[55][201][188]);
+        //printf("l13: %lf\n", l13[127][110][106]);
+        //printf("l14: %lf\n", l14[127][110][106]);
+        ////printf("l15: %lf\n", l15[127][110][106]);
+        ////printf("l16: %lf\n", l16[127][119][105]);
+        printf("l24: %lf\n", l24[223][51][32]);
+        return;
 
         // conv transpose + batch norm + relu
         for (int k = 0; k < 128; k++) {

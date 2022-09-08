@@ -140,7 +140,7 @@
                         getMeanVar(_WeightsTex, _WeightNormMeanVar.w, k),
                         getMeanVar(_WeightsTex, _WeightNormMeanVar.w + 1, k));
 
-                    //s = relu(s);
+                    s = relu(s);
 
                     // if (l == 51 && m == 32 && k == 223 && _PrevCurLayerIDLoop.y == 11)
                     // {

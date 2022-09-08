@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ConvPadEvenNormRELU22
+  m_Name: ConvPadEvenNormRELU24
   m_Shader: {fileID: 4800000, guid: 91bb8dca59ef57c4590186806269059e, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 4009
+  m_CustomRenderQueue: 4010
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -91,6 +91,6 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LayerOffsets: {r: 16, g: 16, b: 62, a: 54}
     - _PrevCurLayerID: {r: 0, g: 1, b: 4, a: 0}
-    - _PrevCurLayerIDLoop: {r: 13, g: 14, b: 17, a: 256}
+    - _PrevCurLayerIDLoop: {r: 15, g: 16, b: 19, a: 256}
     - _WeightBiasMeanVar: {r: 3, g: 4, b: 2, a: 3}
-    - _WeightNormMeanVar: {r: 42, g: 43, b: 44, a: 28}
+    - _WeightNormMeanVar: {r: 48, g: 49, b: 50, a: 32}

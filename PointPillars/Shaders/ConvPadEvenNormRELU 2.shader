@@ -147,10 +147,10 @@
 
                     s = relu(s);
 
-                    if (l == 51 && m == 32 && k == 223 && _PrevCurLayerIDLoop.y == 15)
-                    {
-                        buffer[0] = s;
-                    }
+                    // if (l == 51 && m == 32 && k == 223 && _PrevCurLayerIDLoop.y == 16)
+                    // {
+                    //     buffer[0] = s;
+                    // }
 
                     return s;
                 }
