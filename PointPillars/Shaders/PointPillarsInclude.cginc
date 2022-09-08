@@ -270,7 +270,7 @@ float padLayerUneven(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
 
 float padLayerEven(Texture2D<float> tex, uint layer, uint4 off, uint2 xyMax, uint3 input)
 {
-    if (input.x == 0 || input.y == 0 || input.x >= xyMax.x || input.y >= xyMax.y) return 0.0f;
+    if (input.x == 0 || input.y == 0 || input.x > xyMax.x || input.y > xyMax.y) return 0.0f;
     return getLayer(tex, layer, off, uint3(input.xy - 1, input.z));
 }
 
@@ -284,6 +284,14 @@ float getConst(Texture2D<float> tex, uint index, uint4 off)
     uint2 pos;
     pos.x = off.w + off.z * 3 + off.y * 9;
     pos.y = off.x;
+    return tex[weightsPos[index] + pos];
+}
+
+float getConst2(Texture2D<float> tex, uint index, uint4 off)
+{
+    uint2 pos;
+    pos.x = off.w + off.z * 3 + (off.y % 64) * 9;
+    pos.y = off.x * 4 + off.y / 64;
     return tex[weightsPos[index] + pos];
 }
 

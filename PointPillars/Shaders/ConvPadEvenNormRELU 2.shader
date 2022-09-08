@@ -1,4 +1,4 @@
-﻿Shader "PointPillars/ConvPadEvenNormRELU"
+﻿Shader "PointPillars/ConvPadEvenNormRELU 2"
 {
     Properties
     {
@@ -109,10 +109,10 @@
                                 padLayerEven(_LayersTex, _PrevCurLayerIDLoop.x, _LayerOffsets, _CurOffsets.yz, uint3(l1, m0, n))
                             ),
                             float4(
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 0, 0)),
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 0, 1)),
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 0, 2)),
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 1, 0))
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 0, 0)),
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 0, 1)),
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 0, 2)),
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 1, 0))
                             )
                         );
                         s += dot(
@@ -123,14 +123,14 @@
                                 padLayerEven(_LayersTex, _PrevCurLayerIDLoop.x, _LayerOffsets, _CurOffsets.yz, uint3(l2, m1, n))
                             ),
                             float4(
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 1, 1)),
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 1, 2)),
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 0)),
-                                getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 1))
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 1, 1)),
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 1, 2)),
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 0)),
+                                getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 1))
                             )
                         );
                         s += padLayerEven(_LayersTex, _PrevCurLayerIDLoop.x, _LayerOffsets, _CurOffsets.yz, uint3(l2, m2, n)) *
-                            getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 2));
+                            getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 2));
                     }
 
                     // if (l == 110 && m == 106 && k == 127 && _PrevCurLayerIDLoop.y == 6)
@@ -147,10 +147,10 @@
 
                     s = relu(s);
 
-                    // if (l == 109 && m == 107 && k == 127 && _PrevCurLayerIDLoop.y == 10)
-                    // {
-                    //     buffer[0] = s;
-                    // }
+                    if (l == 51 && m == 32 && k == 223 && _PrevCurLayerIDLoop.y == 15)
+                    {
+                        buffer[0] = s;
+                    }
 
                     return s;
                 }
