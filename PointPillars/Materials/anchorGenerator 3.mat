@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: anchorGenerator 2
+  m_Name: anchorGenerator 3
   m_Shader: {fileID: 4800000, guid: d5945be9c8fa6f74cbf46a7bde9365f5, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -92,4 +92,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LayerAreaOffsets: {r: 14, g: 7, b: 64, a: 0}
+    - _LayerAreaOffsets: {r: 15, g: 7, b: 2, a: 0}
