@@ -1452,19 +1452,6 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
-        for (int i = 0; i < 62; i++)
-        	for (int j = 0; j < 54; j++)
-        		if (l24[223][i][j] > 0.0f) printf("%d, %d\n", i, j);
-        //printf("l9: %lf\n", l9[55][201][188]);
-        //printf("l10: %lf\n", l10[55][201][188]);
-        //printf("l11: %lf\n", l11[55][201][188]);
-        //printf("l13: %lf\n", l13[127][110][106]);
-        //printf("l14: %lf\n", l14[127][110][106]);
-        ////printf("l15: %lf\n", l15[127][110][106]);
-        ////printf("l16: %lf\n", l16[127][119][105]);
-        printf("l24: %lf\n", l24[223][51][32]);
-        return;
-
         // conv transpose + batch norm + relu
         for (int k = 0; k < 128; k++) {
             thread t(&pillar::convTranspose1Stride1, this, l25, l12, const51, const52, const53,
@@ -1473,6 +1460,12 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        //for (int i = 0; i < 248; i++)
+        //    for (int j = 0; j < 216; j++)
+        //        if (l25[122][i][j] > 0.0f) printf("%d, %d\n", i, j);
+        printf("l25: %lf\n", l25[122][131][108]);
+        return;
 
         // conv transpose + batch norm + relu
         for (int k = 0; k < 128; k++) {
