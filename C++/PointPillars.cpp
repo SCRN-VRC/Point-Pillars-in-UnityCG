@@ -1479,12 +1479,6 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
-        //for (int i = 0; i < 248; i++)
-        //    for (int j = 0; j < 216; j++)
-        //        if (l27[89][i][j] > 0.0f) printf("%d, %d\n", i, j);
-        printf("l27: %lf\n", l27[89][133][191]);
-        return;
-
         // bbox_cls_pred
         // conv + bias
         for (int k = 0; k < 18; k++) {
@@ -1518,6 +1512,14 @@ public:
         anchorGenerator(l31, 0, 248, 216);
         anchorGenerator(l32, 1, 248, 216);
         anchorGenerator(l33, 2, 248, 216);
+
+        //for (int i = 0; i < 248; i++)
+        //    for (int j = 0; j < 216; j++)
+        //        if (l28[17][i][j] > 0.0f) printf("%d, %d\n", i, j);
+        printf("l31: %lf\n", l31[167][99][10]);
+        printf("l32: %lf\n", l32[167][99][10]);
+        printf("l33: %lf\n", l33[167][99][10]);
+        return;
 
         // bbox_cls_pred remapped
         // reshape2to3(l28, 3, x, y)

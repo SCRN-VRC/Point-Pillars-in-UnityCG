@@ -1,15 +1,16 @@
-﻿Shader "PointPillars/Conv1Stride1BiasSigmoid"
+﻿Shader "PointPillars/Conv1Stride1Bias"
 {
     Properties
     {
         _ControllerTex ("Controller Texture", 2D) = "black" {}
         _WeightsTex ("Baked Weights", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
+        _LayerAreaOffsets ("Current Layer Area, Split, Weights", Vector) = (0, 0, 0, 0)
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+6" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+8" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Blend Off
         Cull Front
 
@@ -47,6 +48,7 @@
             Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
+            uint4 _LayerAreaOffsets;
             float _MaxDist;
 
             UNITY_INSTANCING_BUFFER_START(Props)
@@ -74,19 +76,19 @@
                 UNITY_SETUP_INSTANCE_ID(i);
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
-                uint4 renderPos = layerPos1[10];
+                uint4 renderPos = layerPos1[_LayerAreaOffsets.x];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
                 
                 float col = _LayersTex[px];
                 uint layerHash = _ControllerTex[txLayerHash];
 
-                if (layerHash % primes[21] == 0)
+                if (layerHash % primes[22] == 0)
                 {
                     px -= renderPos.xy;
                     uint l = px.x % 248;
                     uint m = px.y % 216;
-                    uint k = px.x / 248 + (px.y / 216) * 3;
+                    uint k = px.x / 248 + (px.y / 216) * _LayerAreaOffsets.y;
 
                     float s = 0.0;
                     uint n = 0;
@@ -101,10 +103,10 @@
                                 getLayer1(_LayersTex, 7, uint4(8, 8, 248, 216), uint3(l, m, n + 3))
                             ),
                             float4(
-                                getConst(_WeightsTex, 60, uint2(n, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 1, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 2, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 3, k))
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 1, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 2, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 3, k))
                             )
                         );
                     }
@@ -118,10 +120,10 @@
                                 getLayer1(_LayersTex, 8, uint4(8, 8, 248, 216), uint3(l, m, n + 3))
                             ),
                             float4(
-                                getConst(_WeightsTex, 60, uint2(n + 128, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 129, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 130, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 131, k))
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 128, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 129, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 130, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 131, k))
                             )
                         );
                     }
@@ -135,21 +137,20 @@
                                 getLayer1(_LayersTex, 9, uint4(8, 8, 248, 216), uint3(l, m, n + 3))
                             ),
                             float4(
-                                getConst(_WeightsTex, 60, uint2(n + 256, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 257, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 258, k)),
-                                getConst(_WeightsTex, 60, uint2(n + 259, k))
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 256, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 257, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 258, k)),
+                                getConst(_WeightsTex, _LayerAreaOffsets.z, uint2(n + 259, k))
                             )
                         );
                     }
 
                     // bias
-                    s += getConst(_WeightsTex, 61, uint2(k, 0));
-                    s = sigmoid(s);
+                    s += getConst(_WeightsTex, _LayerAreaOffsets.z + 1, uint2(k, 0));
 
-                    // if (l == 133 && m == 191 && k == 17)
+                    // if (l == 133 && m == 191 && k == 11 && _LayerAreaOffsets.x == 12)
                     // {
-                    //     buffer[0] = s * 100;
+                    //     buffer[0] = s;
                     // }
 
                     return s;

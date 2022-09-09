@@ -217,6 +217,19 @@ static const uint primes[31] =
 static const float coors_range[6] =
     { 0.0f, -39.68f, -3.0f, 69.12f, 39.68f, 1.0f };
 static const float voxel_size[3] = { 0.16f, 0.16f, 4.0f };
+static const float anchor_ranges[18] =
+{
+    0.0f, -39.68f, -0.6f,  69.12f, 39.68f, -0.6f,
+    0.0f, -39.68f, -0.6f,  69.12f, 39.68f, -0.6f,
+    0.0f, -39.68f, -1.78f, 69.12f, 39.68f, -1.78f
+};
+static const float anchor_size[9] =
+{
+    0.6f, 0.8f,  1.73f,
+    0.6f, 1.76f, 1.73f,
+    1.6f, 3.9f,  1.56f
+};
+static const float anchor_rotations[2] = { 0.0f, 1.57f };
 
 #define mod(x,y) ((x)-(y)*floor((x)/(y))) // glsl mod
 #define sc_uint2 static const uint2
@@ -256,6 +269,16 @@ float sigmoid(float x)
 float relu(float x)
 {
     return x < 0.0 ? 0.0 : x;
+}
+
+inline float getAnchorRange(int x, int y)
+{
+    return anchor_ranges[6 * x + y];
+}
+
+inline float getAnchorSize(int x, int y)
+{
+    return anchor_size[3 * x + y];
 }
 
 float batchNorm(float x, float gamma, float beta, float mean, float var)
