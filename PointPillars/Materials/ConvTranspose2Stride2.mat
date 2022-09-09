@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ConvTranspose1Stride1
-  m_Shader: {fileID: 4800000, guid: fffefa81d9241924f972a3205542ca4e, type: 3}
+  m_Name: ConvTranspose2Stride2
+  m_Shader: {fileID: 4800000, guid: 16a846a868db05c4dadbcfae4e353aed, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -48,7 +48,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LayersTex:
-        m_Texture: {fileID: 8400000, guid: b977641617ad42945a01f218a80a3988, type: 2}
+        m_Texture: {fileID: 8400000, guid: 856baa53c32b1b446b44a89e4303d44c, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:

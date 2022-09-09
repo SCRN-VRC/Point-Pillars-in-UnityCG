@@ -1,4 +1,4 @@
-﻿Shader "PointPillars/ConvTranspose1Stride1"
+﻿Shader "PointPillars/ConvTranspose2Stride2"
 {
     Properties
     {
@@ -10,7 +10,7 @@
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+6" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+5" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Blend Off
         Cull Front
 
@@ -76,7 +76,7 @@
                 UNITY_SETUP_INSTANCE_ID(i);
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
-                uint4 renderPos = layerPos1[7];
+                uint4 renderPos = layerPos1[8];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
                 
@@ -90,34 +90,37 @@
                     uint m = px.y % 216;
                     uint k = px.x / 248 + (px.y / 216) * 8;
 
+                    uint l0 = l / 2, m0 = m / 2;
+                    uint x = l % 2, y = m % 2;
+
                     float s = 0.0f;
-                    for (uint n = 0; n < 64; n += 4) {
+                    for (uint n = 0; n < 128; n += 4) {
                         s += dot(
                             float4(
-                                getLayer2(_InputTex, 4, uint4(8, 8, 248, 216), uint3(l, m, n)),
-                                getLayer2(_InputTex, 4, uint4(8, 8, 248, 216), uint3(l, m, n + 1)),
-                                getLayer2(_InputTex, 4, uint4(8, 8, 248, 216), uint3(l, m, n + 2)),
-                                getLayer2(_InputTex, 4, uint4(8, 8, 248, 216), uint3(l, m, n + 3))
+                                getLayer2(_InputTex, 10, uint4(16, 16, 124, 108), uint3(l0, m0, n)),
+                                getLayer2(_InputTex, 10, uint4(16, 16, 124, 108), uint3(l0, m0, n + 1)),
+                                getLayer2(_InputTex, 10, uint4(16, 16, 124, 108), uint3(l0, m0, n + 2)),
+                                getLayer2(_InputTex, 10, uint4(16, 16, 124, 108), uint3(l0, m0, n + 3))
                             ),
                             float4(
-                                getConst(_WeightsTex, 51, uint2(k, n)),
-                                getConst(_WeightsTex, 51, uint2(k, n + 1)),
-                                getConst(_WeightsTex, 51, uint2(k, n + 2)),
-                                getConst(_WeightsTex, 51, uint2(k, n + 3))
+                                getConst2x2(_WeightsTex, 54, uint4(n, k, x, y)),
+                                getConst2x2(_WeightsTex, 54, uint4(n + 1, k, x, y)),
+                                getConst2x2(_WeightsTex, 54, uint4(n + 2, k, x, y)),
+                                getConst2x2(_WeightsTex, 54, uint4(n + 3, k, x, y))
                             )
                         );
                     }
 
                     s = batchNorm(
                         s,
-                        getConst(_WeightsTex, 52, uint2(k, 0)),
-                        getConst(_WeightsTex, 53, uint2(k, 0)),
-                        getMeanVar(_WeightsTex, 34, k),
-                        getMeanVar(_WeightsTex, 35, k));
+                        getConst(_WeightsTex, 55, uint2(k, 0)),
+                        getConst(_WeightsTex, 56, uint2(k, 0)),
+                        getMeanVar(_WeightsTex, 36, k),
+                        getMeanVar(_WeightsTex, 37, k));
 
                     s = relu(s);
 
-                    // if (l == 131 && m == 108 && k == 122)
+                    // if (l == 207 && m == 135 && k == 89)
                     // {
                     //     buffer[0] = s;
                     // }

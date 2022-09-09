@@ -263,7 +263,15 @@ float batchNorm(float x, float gamma, float beta, float mean, float var)
     return ((x - mean) / sqrt(var + 0.001)) * gamma + beta;
 }
 
-float getLayer(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
+float getLayer1(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
+{
+    uint2 pos;
+    pos.x = input.x + (input.z % off.x) * off.z;
+    pos.y = input.y + (input.z / off.y) * off.w;
+    return tex[layerPos1[layer] + pos];
+}
+
+float getLayer2(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
 {
     uint2 pos;
     pos.x = input.x + (input.z % off.x) * off.z;
@@ -274,13 +282,13 @@ float getLayer(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
 float padLayerUneven(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
 {
     if (input.x == 0 || input.y == 0) return 0.0f;
-    return getLayer(tex, layer, off, uint3(input.xy - 1, input.z));
+    return getLayer2(tex, layer, off, uint3(input.xy - 1, input.z));
 }
 
 float padLayerEven(Texture2D<float> tex, uint layer, uint4 off, uint2 xyMax, uint3 input)
 {
     if (input.x == 0 || input.y == 0 || input.x > xyMax.x || input.y > xyMax.y) return 0.0f;
-    return getLayer(tex, layer, off, uint3(input.xy - 1, input.z));
+    return getLayer2(tex, layer, off, uint3(input.xy - 1, input.z));
 }
 
 float getConst(Texture2D<float> tex, uint index, uint2 off)
@@ -292,6 +300,22 @@ float getConst(Texture2D<float> tex, uint index, uint4 off)
 {
     uint2 pos;
     pos.x = off.w + off.z * 3 + off.y * 9;
+    pos.y = off.x;
+    return tex[weightsPos[index] + pos];
+}
+
+float getConst2x2(Texture2D<float> tex, uint index, uint4 off)
+{
+    uint2 pos;
+    pos.x = off.w + off.z * 2 + off.y * 4;
+    pos.y = off.x;
+    return tex[weightsPos[index] + pos];
+}
+
+float getConst4x4(Texture2D<float> tex, uint index, uint4 off)
+{
+    uint2 pos;
+    pos.x = off.w + off.z * 4 + off.y * 16;
     pos.y = off.x;
     return tex[weightsPos[index] + pos];
 }

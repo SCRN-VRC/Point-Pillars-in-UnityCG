@@ -1461,12 +1461,6 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
-        //for (int i = 0; i < 248; i++)
-        //    for (int j = 0; j < 216; j++)
-        //        if (l25[122][i][j] > 0.0f) printf("%d, %d\n", i, j);
-        printf("l25: %lf\n", l25[122][131][108]);
-        return;
-
         // conv transpose + batch norm + relu
         for (int k = 0; k < 128; k++) {
             thread t(&pillar::convTranspose2Stride2, this, l26, l18, const54, const55, const56,
@@ -1484,6 +1478,12 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        //for (int i = 0; i < 248; i++)
+        //    for (int j = 0; j < 216; j++)
+        //        if (l27[89][i][j] > 0.0f) printf("%d, %d\n", i, j);
+        printf("l27: %lf\n", l27[89][133][191]);
+        return;
 
         // bbox_cls_pred
         // conv + bias
