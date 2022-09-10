@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: bbox_anchors_inds
-  m_Shader: {fileID: 4800000, guid: 815bc3178ef08bb48ba51fac5af4315c, type: 3}
+  m_Name: anchors2Bboxes
+  m_Shader: {fileID: 4800000, guid: bb54e08e25b2ac94da308862c9046fdf, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
