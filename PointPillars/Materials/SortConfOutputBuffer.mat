@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Display7
-  m_Shader: {fileID: 4800000, guid: 6ab1179095fc76b4ca2caa181b1af285, type: 3}
+  m_Name: SortConfOutputBuffer
+  m_Shader: {fileID: 4800000, guid: b527f10110aa5c54682239d6f370b8ea, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 8400000, guid: e17fe1144ee53f04ca3856e088bc809d, type: 2}
+        m_Texture: {fileID: 8400000, guid: 77d2d8d6b46508f40ac8ef6f857cbadc, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -63,6 +63,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _MaxDist: 0.02
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

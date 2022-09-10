@@ -92,17 +92,14 @@
                     tg.x = l % WIDTH;
                     tg.y = l / WIDTH;
 
-                    // hacky way of sorting the X and Y together
-                    // we know that Y doesn't go over 500
-
                     float cdata = l > i ?
                         _LayersTex[px].x : _LayersTex[tg].x;
                     float tdata = l > i ?
                         _LayersTex[tg].x : _LayersTex[px].x;
 
                     if (
-                        (((i & flip) == 0) && (cdata > tdata)) ||
-                        (((i & flip) != 0) && (cdata < tdata))
+                        (((i & flip) == 0) && (cdata < tdata)) ||
+                        (((i & flip) != 0) && (cdata > tdata))
                     )
                     {
                         return _LayersTex[tg];

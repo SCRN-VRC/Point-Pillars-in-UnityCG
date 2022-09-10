@@ -5,19 +5,20 @@
         _ControllerTex ("Controller Texture", 2D) = "black" {}
         _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
+        _LoopTexelMaxCount ("Loop Texel Postion, Max Count", Vector) = (0, 0, 0, 0)
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
     {
         Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -47,6 +48,7 @@
             Texture2D<float4> _InputTex;
             Texture2D<float4> _LayersTex;
             float4 _LayersTex_TexelSize;
+            uint4 _LoopTexelMaxCount;
             float _MaxDist;
 
             UNITY_INSTANCING_BUFFER_START(Props)
@@ -73,10 +75,10 @@
                 clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
 
-                uint loopCount = _ControllerTex[txSortInputLoop];
+                uint loopCount = _ControllerTex[_LoopTexelMaxCount.xy];
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
 
-                return loopCount == MAX_LOOP ? _InputTex[px] : _LayersTex[px];
+                return loopCount == _LoopTexelMaxCount.z ? _InputTex[px] : _LayersTex[px];
             }
             ENDCG
         }
