@@ -60,7 +60,7 @@ private:
     float*** l1, *** l3, ** l4, ** l5, *** l6, ** l7, *** l8, *** l9, *** l10, *** l11,
         *** l12, *** l13, *** l14, *** l15, *** l16, *** l17, *** l18, *** l19, *** l20,
         *** l21, *** l22, *** l23, *** l24, *** l25, *** l26, *** l27, *** l28, *** l29,
-        *** l30, *** l31, *** l32, *** l33, ** l36, ** l37, ** l39, ** l40, ** l41;
+        *** l30, *** l31, *** l32, *** l33, ** l36, ** l37, ** l39, ** l40;
     int** l0, * l2, * l38;
 
     // sorting is easier :rolling_eyes:
@@ -513,7 +513,6 @@ public:
         l38 = new int[100];
         l39 = createArray(100, 7);
         l40 = createArray(100, 7);
-        l41 = createArray(100, 5);
 
         // get input
         std::ifstream fin2(pathInput, std::ios::binary);
@@ -1564,14 +1563,8 @@ public:
                 l39[i][j] = anchor2to3(l35[i], j);
         }
 
-        for (int i = 0; i < 321408; i++)
-        {
-            if (l34[i] <= 0.1f)
-            {
-                cout << i << endl;
-                return;
-            }
-        }
+        printf("%lf\n", l39[10][4]);
+        return;
 
         anchors2Bboxes(l40, l39, l37, 100);
 
