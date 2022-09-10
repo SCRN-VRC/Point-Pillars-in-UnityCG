@@ -236,6 +236,7 @@ static const float anchor_rotations[2] = { 0.0f, 1.57f };
 
 #define MAX_FLOAT                               1e6
 #define MAX_LOOP                                21
+#define MAX_CONF_LOOP                           5
 #define MAX_POINTS                              32
 #define MAX_LAYERS                              30
 
@@ -244,6 +245,7 @@ static const float anchor_rotations[2] = { 0.0f, 1.57f };
 #define txLayerCounter1                         uint2(2, 0)
 #define txLayerThread                           uint2(3, 0)
 #define txLayerHash                             uint2(4, 0)
+#define txSortConfLoop                          uint2(5, 0)
 
 inline bool insideArea(in uint4 area, uint2 px)
 {
@@ -300,6 +302,15 @@ float getLayer2(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
     pos.x = input.x + (input.z % off.x) * off.z;
     pos.y = input.y + (input.z / off.y) * off.w;
     return tex[layerPos2[layer] + pos];
+}
+
+// mapping 2d -> 3d array
+float reshape2to3(Texture2D<float> tex, uint layer, uint4 off, uint width, uint x, uint y)
+{
+    uint i = y + (x * width) % (width * 6);
+    uint j = x / 1296;
+    uint k = (x / 6) % 216;
+    return getLayer1(tex, layer, off, uint3(j, k, i));
 }
 
 float padLayerUneven(Texture2D<float> tex, uint layer, uint4 off, uint3 input)

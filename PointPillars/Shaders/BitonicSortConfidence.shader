@@ -1,4 +1,4 @@
-﻿Shader "PointPillars/BitonicSort"
+﻿Shader "PointPillars/BitonicSortConfidence"
 {
     Properties
     {
@@ -10,14 +10,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -73,13 +73,13 @@
                 clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
 
-                uint loopCount = _ControllerTex[txSortInputLoop];
+                uint loopCount = _ControllerTex[txSortConfLoop];
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
 
-                uint flip = flipArray[loopCount * 9 + _IndexOffset];
-                uint disperse = disperseArray[loopCount * 9 + _IndexOffset];
+                uint flip = flipArray[loopCount * 13 + _IndexOffset];
+                uint disperse = disperseArray[loopCount * 13 + _IndexOffset];
 
-                if (loopCount >= MAX_LOOP)
+                if (loopCount >= MAX_CONF_LOOP)
                 {
                     return _LayersTex[px];
                 }
@@ -96,11 +96,9 @@
                     // we know that Y doesn't go over 500
 
                     float cdata = l > i ?
-                        _LayersTex[px].x * 500.0 + _LayersTex[px].y :
-                        _LayersTex[tg].x * 500.0 + _LayersTex[tg].y;
+                        _LayersTex[px].x : _LayersTex[tg].x;
                     float tdata = l > i ?
-                        _LayersTex[tg].x * 500.0 + _LayersTex[tg].y :
-                        _LayersTex[px].x * 500.0 + _LayersTex[px].y;
+                        _LayersTex[tg].x : _LayersTex[px].x;
 
                     if (
                         (((i & flip) == 0) && (cdata > tdata)) ||

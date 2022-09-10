@@ -8,14 +8,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -71,6 +71,7 @@
 
                 uint2 px = i.uv.xy * _ControllerTex_TexelSize.zw;
                 float sortInputLoop = _ControllerTex[txSortInputLoop];
+                float sortConfLoop = _ControllerTex[txSortConfLoop];
                 float layerThread = _ControllerTex[txLayerThread];
                 float layerHash = _ControllerTex[txLayerHash];
                 float counters[2] =
@@ -103,6 +104,9 @@
 
                 layerHash = primes[(uint) counters[0]] * primes[(uint) counters[1]];
 
+                sortConfLoop = (_Time.y < 0.1) ?
+                    2.0 : mod(sortConfLoop + 1.0, MAX_CONF_LOOP + 1.0);
+
                 //if (sortInputLoop == MAX_LOOP)
                 //    buffer[0] = float4(layerThread, layerHash, counters[0], counters[1]);
 
@@ -111,6 +115,7 @@
                 StoreValue(txLayerThread, layerThread, col, px);
                 StoreValue(txLayerHash, layerHash, col, px);
                 StoreValue(txSortInputLoop, sortInputLoop, col, px);
+                StoreValue(txSortConfLoop, sortConfLoop, col, px);
                 return col;
             }
             ENDCG

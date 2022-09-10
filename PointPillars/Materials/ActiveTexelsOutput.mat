@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Display5
-  m_Shader: {fileID: 4800000, guid: 6ab1179095fc76b4ca2caa181b1af285, type: 3}
+  m_Name: ActiveTexelsOutput
+  m_Shader: {fileID: 4800000, guid: 334fcae8638345745a377fcd8faa3528, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -39,8 +39,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTex:
+    - _InputTex:
         m_Texture: {fileID: 8400000, guid: b8b3e9e47071ce34fa1b4d231ef543b3, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LayersTex:
+        m_Texture: {fileID: 8400000, guid: e334d58bdac24074398f9f9ceec43fb6, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -63,6 +71,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _MaxDist: 0.02
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

@@ -1513,14 +1513,6 @@ public:
         anchorGenerator(l32, 1, 248, 216);
         anchorGenerator(l33, 2, 248, 216);
 
-        //for (int i = 0; i < 248; i++)
-        //    for (int j = 0; j < 216; j++)
-        //        if (l28[17][i][j] > 0.0f) printf("%d, %d\n", i, j);
-        printf("l31: %lf\n", l31[167][99][10]);
-        printf("l32: %lf\n", l32[167][99][10]);
-        printf("l33: %lf\n", l33[167][99][10]);
-        return;
-
         // bbox_cls_pred remapped
         // reshape2to3(l28, 3, x, y)
         // bbox_pred remapped
@@ -1548,7 +1540,7 @@ public:
                 }
             }
         }
-        
+
         auto p = sort_permutation(l34,
             [](float const& a, float const& b) { return a > b; });
 
@@ -1570,6 +1562,15 @@ public:
             // bbox_anchors_inds
             for (int j = 0; j < 7; j++)
                 l39[i][j] = anchor2to3(l35[i], j);
+        }
+
+        for (int i = 0; i < 321408; i++)
+        {
+            if (l34[i] <= 0.1f)
+            {
+                cout << i << endl;
+                return;
+            }
         }
 
         anchors2Bboxes(l40, l39, l37, 100);
