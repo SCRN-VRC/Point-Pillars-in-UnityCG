@@ -81,11 +81,11 @@
                 if (_Time.y < 0.1)
                 {
                     px -= renderPos.xy;
-                    uint l = px.x % 248;
-                    uint m = px.y % 216;
-                    uint k = px.x / 248 + (px.y / 216) * _LayerAreaOffsets.y;
+                    uint m = px.x % 248;
+                    uint l = px.y % 216;
+                    uint k = px.x / 248 + (px.y / 216) * 7;
 
-                    int x = _LayerAreaOffsets.z;
+                    int x = _LayerAreaOffsets.y;
 
                     const float step_x = (getAnchorRange(x, 3) - getAnchorRange(x, 0)) / 216.0;
                     const float step_y = (getAnchorRange(x, 4) - getAnchorRange(x, 1)) / 248.0;
@@ -98,7 +98,7 @@
                         case 0: 
                         case 1: return getAnchorRange(x, 0) + step_x * l + shift_x;
                         case 2:
-                        case 3: return getAnchorRange(x, 1) + step_y * k + shift_y;
+                        case 3: return getAnchorRange(x, 1) + step_y * m + shift_y;
                         case 4:
                         case 5: return getAnchorRange(x, 2);
                         case 6:
@@ -113,21 +113,7 @@
 
                     return 0.0;
                 }
-                // else{
-                //     px -= renderPos.xy;
-                //     uint l = px.x % 248;
-                //     uint m = px.y % 216;
-                //     uint k = px.x / 248 + (px.y / 216) * _LayerAreaOffsets.y;
 
-                //     int x = _LayerAreaOffsets.z;
-
-                //     if (l == 167 && m == 99 && k == 10)
-                //     {
-                //         if (x == 0) buffer[0][0] = col;
-                //         if (x == 1) buffer[0][1] = col;
-                //         if (x == 2) buffer[0][2] = col;
-                //     }
-                // }
                 return col;
             }
             ENDCG

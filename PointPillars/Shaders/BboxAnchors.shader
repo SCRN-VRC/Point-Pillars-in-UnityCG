@@ -101,11 +101,6 @@
                 uint id = round(_IndexTex[idXY].y);
                 float o = anchor2to3(id, px.y);
 
-                // if (px.x == 3 && px.y == 4)
-                // {
-                //     buffer[0][1] = o;
-                // }
-
                 return o;
             }
             ENDCG

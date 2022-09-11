@@ -98,7 +98,6 @@
                     {
                         float delta0 = _LayersTex[layerPos2[17] + uint2(px.x, 0)];
                         float anchor0 = _LayersTex[layerPos2[19] + uint2(px.x, 0)];
-                        if (px.x == 1) buffer[0] = float4(delta0, anchor0, 0, 0);
                         return delta0 * da + anchor0;
                     }
                     case 1:

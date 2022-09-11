@@ -41,7 +41,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            RWStructuredBuffer<float4> buffer : register(u1);
+            //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _IndexTex;
             Texture2D<float> _LayersTex;
             float4 _LayersTex_TexelSize;
@@ -96,7 +96,7 @@
 
                     // if (px.x == 1)
                     // {
-                    //     buffer[0] = float4(myConfClass.x, myCenter);
+                    //     buffer[0] = float4(myCenter, myRadius);
                     // }
 
                     bool skip = false;
@@ -113,11 +113,16 @@
                         // in my c++ code
                         float3 otherCenter;
                         otherCenter.x = _LayersTex[layerPos2[20] + int2(i, 0)];
-                        otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 0)];
-                        otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 0)];
+                        otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 1)];
+                        otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 2)];
 
                         float otherRadius = (_LayersTex[layerPos2[20] + int2(i, 3)] + _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
                         float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
+
+                        // if (px.x == 1)
+                        // {
+                        //     buffer[0] = float4(otherCenter, overlap);
+                        // }
 
                         // something better and overlaps
                         if (otherConfClass.x > myConfClass.x && overlap < 0.0)
