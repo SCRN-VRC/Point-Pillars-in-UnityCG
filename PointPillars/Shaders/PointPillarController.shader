@@ -3,6 +3,7 @@
     Properties
     {
         _ControllerTex ("Controller", 2D) = "black" {}
+        _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -40,8 +41,9 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
+            Texture2D<float> _LayersTex;
             float4 _ControllerTex_TexelSize;
             float _MaxDist;
 
@@ -107,8 +109,23 @@
                 sortConfLoop = (_Time.y < 0.1) ?
                     2.0 : mod(sortConfLoop + 1.0, MAX_CONF_LOOP + 1.0);
 
-                //if (sortInputLoop == MAX_LOOP)
-                //    buffer[0] = float4(layerThread, layerHash, counters[0], counters[1]);
+                float predictCount = 0.0;
+                float conf = _LayersTex[layerPos2[23].xy];
+                while (conf > 0.0 && predictCount <= 100)
+                {
+                    predictCount = predictCount + 1;
+                    conf = _LayersTex[layerPos2[23] + int2(predictCount, 0)];
+                }
+
+                // buffer[0] = float4
+                // (
+                //     _LayersTex[layerPos2[23] + int2(1, 1)],
+                //     _LayersTex[layerPos2[23] + int2(1, 2)],
+                //     _LayersTex[layerPos2[23] + int2(1, 3)],
+                //     _LayersTex[layerPos2[23] + int2(1, 4)]
+                // );
+
+                buffer[0] = predictCount;
 
                 StoreValue(txLayerCounter0, counters[0], col, px);
                 StoreValue(txLayerCounter1, counters[1], col, px);
@@ -116,6 +133,7 @@
                 StoreValue(txLayerHash, layerHash, col, px);
                 StoreValue(txSortInputLoop, sortInputLoop, col, px);
                 StoreValue(txSortConfLoop, sortConfLoop, col, px);
+                StoreValue(txPredictCount, predictCount, col, px);
                 return col;
             }
             ENDCG

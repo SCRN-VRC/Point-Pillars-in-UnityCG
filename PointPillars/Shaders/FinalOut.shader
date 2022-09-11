@@ -1,4 +1,4 @@
-﻿Shader "PointPillars/NMS"
+﻿Shader "PointPillars/FinalOut"
 {
     Properties
     {
@@ -8,7 +8,7 @@
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+13" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+12" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Blend Off
         Cull Front
 
@@ -67,17 +67,20 @@
                 return o;
             }
 
+            float limit_period(float val, float offset, float period)
+            {
+                return val - floor(val / period + offset) * period;
+            }
+
             float frag (v2f i) : SV_Target
             {
                 clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
-                uint4 renderPos = layerPos2[21];
+                uint4 renderPos = layerPos2[23];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
-
-                //float col = _LayersTex[px];
 
                 px -= renderPos.xy;
                 uint2 idXY;
@@ -85,57 +88,26 @@
                 idXY.x = px.x % width;
                 idXY.y = px.x / width;
                 float2 myConfClass = _IndexTex[idXY].xz;
+                int index = _LayersTex[layerPos2[22] + int2(px.x, 0)];
 
-                if (myConfClass.x > 0.0)
+                if (index < 0) return -1.0;
+
+                float o = _LayersTex[layerPos2[20] + int2(index, px.y - 2)];
+
+                switch(px.y)
                 {
-                    float3 myCenter;
-                    myCenter.x = _LayersTex[layerPos2[20] + uint2(px.x, 0)];
-                    myCenter.y = _LayersTex[layerPos2[20] + uint2(px.x, 1)];
-                    myCenter.z = _LayersTex[layerPos2[20] + uint2(px.x, 2)];
-                    float myRadius = (_LayersTex[layerPos2[20] + uint2(px.x, 3)] + _LayersTex[layerPos2[20] + uint2(px.x, 4)]) * 0.5;
-
-                    // if (px.x == 1)
-                    // {
-                    //     buffer[0] = float4(myCenter, myRadius);
-                    // }
-
-                    bool skip = false;
-                    for (int i = px.x - 1; i >= 0; i--)
+                    case 0: return myConfClass.x;
+                    case 1: return myConfClass.y;
+                    case 8:
                     {
-                        idXY.x = i % width;
-                        idXY.y = i / width;
-                        float2 otherConfClass = _IndexTex[idXY].xz;
-                        // only same classes
-                        if (otherConfClass.y != myConfClass.y) continue;
-
-                        // simple sphere intersection test, i have a more detailed
-                        // implementation of "rotation robust intersection over union"
-                        // in my c++ code
-                        float3 otherCenter;
-                        otherCenter.x = _LayersTex[layerPos2[20] + int2(i, 0)];
-                        otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 1)];
-                        otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 2)];
-
-                        float otherRadius = (_LayersTex[layerPos2[20] + int2(i, 3)] + _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
-                        float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
-
-                        // if (px.x == 1)
-                        // {
-                        //     buffer[0] = float4(otherCenter, overlap);
-                        // }
-
-                        // something better and overlaps
-                        if (otherConfClass.x > myConfClass.x && overlap < 0.0)
-                        {
-                            skip = true;
-                            break;
-                        }
+                        float dir = _LayersTex[layerPos2[18] + int2(index, 0)];
+                        o = limit_period(o, 1.0, UNITY_PI);
+                        o += (1.0 - dir) * UNITY_PI;
+                        return o;
                     }
-
-                    return skip ? -1.0 : px.x;
                 }
 
-                return -1.0;
+                return o;
             }
             ENDCG
         }

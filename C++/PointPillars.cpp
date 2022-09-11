@@ -1565,8 +1565,6 @@ public:
 
         anchors2Bboxes(l40, l39, l37, 100);
 
-        printf("l40: %lf, %lf, %lf, %lf\n", l40[1][0], l40[1][1], l40[1][2], (l40[1][3] + l40[1][4]) * 0.5f);
-
         // nms
         std::vector<int> keep;
         for (int k = 0; k < 100; k++) {

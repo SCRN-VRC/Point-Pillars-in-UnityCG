@@ -131,7 +131,7 @@ static const uint4 layerPos1[16] =
     5952, 7328, 1736, 432,       // l33
 };
 
-static const uint4 layerPos2[22] =
+static const uint4 layerPos2[24] =
 {
     0, 0, 3968, 3456,       // l8
     1984, 3456, 1984, 1728,       // l9
@@ -150,11 +150,13 @@ static const uint4 layerPos2[22] =
     5952, 2592, 992, 864,       // l22
     5952, 3456, 992, 864,       // l23
     5952, 4320, 992, 864,       // l24
-    6152, 5184, 100, 7,       // l37
-    6352, 5184, 100, 1,       // l38
+    6252, 5184, 100, 7,       // l37
+    6552, 5184, 100, 1,       // l38
     6052, 5184, 100, 7,       // l39
-    5952, 5184, 100, 7,       // l40
-    6252, 5184, 100, 1,       // nms
+    6152, 5184, 100, 7,       // l40
+    6452, 5184, 100, 1,       // nms
+    6352, 5184, 100, 1,       // pack
+    5952, 5184, 100, 9,       // final
 };
 
 /*
@@ -251,6 +253,7 @@ static const float anchor_rotations[2] = { 0.0f, 1.57f };
 #define txLayerThread                           uint2(3, 0)
 #define txLayerHash                             uint2(4, 0)
 #define txSortConfLoop                          uint2(5, 0)
+#define txPredictCount                          uint2(0, 1)
 
 inline bool insideArea(in uint4 area, uint2 px)
 {
