@@ -1,15 +1,14 @@
-﻿Shader "PointPillars/BboxPredictions"
+﻿Shader "PointPillars/NMS"
 {
     Properties
     {
         _IndexTex ("Sorted Index Texture", 2D) = "black" {}
-        _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+11" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+13" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Blend Off
         Cull Front
 
@@ -42,9 +41,8 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _IndexTex;
-            Texture2D<float> _InputTex;
             Texture2D<float> _LayersTex;
             float4 _LayersTex_TexelSize;
             float4 _IndexTex_TexelSize;
@@ -75,7 +73,7 @@
                 UNITY_SETUP_INSTANCE_ID(i);
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
-                uint4 renderPos = layerPos2[17];
+                uint4 renderPos = layerPos2[21];
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
 
@@ -86,15 +84,53 @@
                 uint width = _IndexTex_TexelSize.z;
                 idXY.x = px.x % width;
                 idXY.y = px.x / width;
-                uint id = round(_IndexTex[idXY].y);
-                float s = reshape2to3(_InputTex, 11, uint4(6, 6, 248, 216), 7, id, px.y);
+                float2 myConfClass = _IndexTex[idXY].xz;
 
-                // if (px.x == 3 && px.y == 4)
-                // {
-                //     buffer[0][0] = s;
-                // }
+                if (myConfClass.x > 0.0 && px.x != 0)
+                {
+                    float3 myCenter;
+                    myCenter.x = _LayersTex[layerPos2[20] + uint2(px.x, 0)];
+                    myCenter.y = _LayersTex[layerPos2[20] + uint2(px.x, 1)];
+                    myCenter.z = _LayersTex[layerPos2[20] + uint2(px.x, 2)];
+                    float myRadius = (_LayersTex[layerPos2[20] + uint2(px.x, 3)] + _LayersTex[layerPos2[20] + uint2(px.x, 4)]) * 0.5;
 
-                return s;
+                    // if (px.x == 1)
+                    // {
+                    //     buffer[0] = float4(myConfClass.x, myCenter);
+                    // }
+
+                    bool skip = false;
+                    for (int i = px.x - 1; i >= 0; i--)
+                    {
+                        idXY.x = i % width;
+                        idXY.y = i / width;
+                        float2 otherConfClass = _IndexTex[idXY].xz;
+                        // only same classes
+                        if (otherConfClass.y != myConfClass.y) continue;
+
+                        // simple sphere intersection test, i have a more detailed
+                        // implementation of "rotation robust intersection over union"
+                        // in my c++ code
+                        float3 otherCenter;
+                        otherCenter.x = _LayersTex[layerPos2[20] + int2(i, 0)];
+                        otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 0)];
+                        otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 0)];
+
+                        float otherRadius = (_LayersTex[layerPos2[20] + int2(i, 3)] + _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
+                        float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
+
+                        // something better and overlaps
+                        if (otherConfClass.x > myConfClass.x && overlap < 0.0)
+                        {
+                            skip = true;
+                            break;
+                        }
+                    }
+
+                    return skip ? -1.0 : px.x;
+                }
+
+                return -1.0;
             }
             ENDCG
         }

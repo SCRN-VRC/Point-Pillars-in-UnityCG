@@ -1563,10 +1563,11 @@ public:
                 l39[i][j] = anchor2to3(l35[i], j);
         }
 
-        printf("%lf\n", l39[10][4]);
-        return;
-
         anchors2Bboxes(l40, l39, l37, 100);
+
+        printf("l39: %lf\n", l39[1][0]);
+        printf("l37: %lf\n", l37[1][0]);
+        //printf("l40: %lf, %lf, %lf, %lf\n", l36[1][l35b[1]], l40[1][0], l40[1][1], l40[1][2]);
 
         // nms
         std::vector<int> keep;

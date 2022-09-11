@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: anchors2Bboxes
-  m_Shader: {fileID: 4800000, guid: bb54e08e25b2ac94da308862c9046fdf, type: 3}
+  m_Name: nms
+  m_Shader: {fileID: 4800000, guid: 89f1ef273a431a040b7050ed3a2153d8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -52,7 +52,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LayersTex:
-        m_Texture: {fileID: 8400000, guid: c635da8c29c26e045ba6f2e5f016ed31, type: 2}
+        m_Texture: {fileID: 8400000, guid: c5f046f8971bed949abc8abb8290cda5, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
