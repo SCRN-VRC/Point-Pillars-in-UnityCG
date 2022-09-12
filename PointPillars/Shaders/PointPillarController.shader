@@ -68,8 +68,8 @@
 
             float frag (v2f i) : SV_Target
             {
-                clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
+                clip(i.uv.z);
 
                 uint2 px = i.uv.xy * _ControllerTex_TexelSize.zw;
                 float sortInputLoop = _ControllerTex[txSortInputLoop];

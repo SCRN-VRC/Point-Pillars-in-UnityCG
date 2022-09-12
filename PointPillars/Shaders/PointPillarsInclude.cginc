@@ -414,4 +414,36 @@ float getL6(Texture2D<float> tex, uint4 off)
     return tex[layerPos1[5] + pos];
 }
 
+uint getCount(Texture2D<float> tex)
+{
+    return tex[txPredictCount];
+}
+
+float2 getPredictionClass(Texture2D<float> tex, uint id)
+{
+    float2 predictClass;
+    predictClass.x = tex[layerPos2[23].xy + uint2(id, 0)];
+    predictClass.y = tex[layerPos2[23].xy + uint2(id, 1)];
+    return predictClass;
+}
+
+float3 getPredictionPosition(Texture2D<float> tex, uint id)
+{
+    float3 pos;
+    pos.x = tex[layerPos2[23].xy + uint2(id, 2)];
+    pos.y = tex[layerPos2[23].xy + uint2(id, 3)];
+    pos.z = tex[layerPos2[23].xy + uint2(id, 4)];
+    return pos;
+}
+
+float4 getPredictionSizeRotation(Texture2D<float> tex, uint id)
+{
+    float4 sizeRotation;
+    sizeRotation.x = tex[layerPos2[23].xy + uint2(id, 5)];
+    sizeRotation.y = tex[layerPos2[23].xy + uint2(id, 6)];
+    sizeRotation.z = tex[layerPos2[23].xy + uint2(id, 7)];
+    sizeRotation.w = tex[layerPos2[23].xy + uint2(id, 8)];
+    return sizeRotation;
+}
+
 #endif

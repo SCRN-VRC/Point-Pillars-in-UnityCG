@@ -69,8 +69,8 @@
 
             float frag (v2f i) : SV_Target
             {
-                clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
+                clip(i.uv.z);
 
                 float2 px = i.uv.xy * _LayersTex_TexelSize.zw;
                 if (all(px < _InputTex_TexelSize.zw))

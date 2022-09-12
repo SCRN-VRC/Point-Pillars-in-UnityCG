@@ -62,8 +62,8 @@
 
             float4 frag (v2f i) : SV_Target
             {
-                clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
+                clip(i.uv.z);
                 // sample the texture
                 float4 col = _MainTex.Load(int3(i.uv.xy * _MainTex_TexelSize.zw, 0));
                 return col;

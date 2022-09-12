@@ -72,8 +72,8 @@
 
             float4 frag (v2f i) : SV_Target
             {
-                clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
+                clip(i.uv.z);
 
                 uint loopCount = _ControllerTex[_LoopTexelMaxCount.xy];
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;

@@ -68,8 +68,8 @@
 
             float4 frag (v2f i) : SV_Target
             {
-                clip(i.uv.z);
                 UNITY_SETUP_INSTANCE_ID(i);
+                clip(i.uv.z);
 
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
                 uint id = px.x + px.y * _LayersTex_TexelSize.z;
