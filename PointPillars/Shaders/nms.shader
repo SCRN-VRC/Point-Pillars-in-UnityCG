@@ -121,11 +121,6 @@
                             _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
                         float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
 
-                        // if (px.x == 1)
-                        // {
-                        //     buffer[0] = float4(otherCenter, overlap);
-                        // }
-
                         // something better and overlaps
                         if (otherConfClass.x > myConfClass.x && overlap < 0.0)
                         {
@@ -133,6 +128,11 @@
                             break;
                         }
                     }
+
+                    // if (px.x == 6)
+                    // {
+                    //     buffer[0] = float4(myConfClass.y, skip, myCenter.xy);
+                    // }
 
                     return skip ? -1.0 : px.x;
                 }

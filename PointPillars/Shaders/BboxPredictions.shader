@@ -89,11 +89,6 @@
                 uint id = round(_IndexTex[idXY].y);
                 float s = reshape2to3(_InputTex, 11, uint4(6, 6, 248, 216), 7, id, px.y);
 
-                // if (px.x == 3 && px.y == 4)
-                // {
-                //     buffer[0][0] = s;
-                // }
-
                 return s;
             }
             ENDCG

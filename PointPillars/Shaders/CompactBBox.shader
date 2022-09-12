@@ -77,7 +77,7 @@
                 px -= renderPos.xy;
 
                 uint count = 0;
-                for (int i = px.x; i < 100; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     int index = _LayersTex[layerPos2[21] + int2(i, 0)];
                     count = index >= 0 ? count + 1 : count;
