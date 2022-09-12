@@ -119,10 +119,10 @@
 
                 // buffer[0] = float4
                 // (
-                //     _LayersTex[layerPos2[23] + int2(1, 1)],
-                //     _LayersTex[layerPos2[23] + int2(1, 2)],
-                //     _LayersTex[layerPos2[23] + int2(1, 3)],
-                //     _LayersTex[layerPos2[23] + int2(1, 4)]
+                //     _LayersTex[layerPos2[23] + int2(0, 0)],
+                //     _LayersTex[layerPos2[23] + int2(1, 0)],
+                //     _LayersTex[layerPos2[23] + int2(2, 0)],
+                //     _LayersTex[layerPos2[23] + int2(3, 0)]
                 // );
 
                 buffer[0] = predictCount;

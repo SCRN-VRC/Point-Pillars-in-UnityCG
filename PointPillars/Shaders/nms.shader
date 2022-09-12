@@ -92,7 +92,8 @@
                     myCenter.x = _LayersTex[layerPos2[20] + uint2(px.x, 0)];
                     myCenter.y = _LayersTex[layerPos2[20] + uint2(px.x, 1)];
                     myCenter.z = _LayersTex[layerPos2[20] + uint2(px.x, 2)];
-                    float myRadius = (_LayersTex[layerPos2[20] + uint2(px.x, 3)] + _LayersTex[layerPos2[20] + uint2(px.x, 4)]) * 0.5;
+                    float myRadius = min(_LayersTex[layerPos2[20] + uint2(px.x, 3)],
+                        _LayersTex[layerPos2[20] + uint2(px.x, 4)]) * 0.5;
 
                     // if (px.x == 1)
                     // {
@@ -116,7 +117,8 @@
                         otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 1)];
                         otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 2)];
 
-                        float otherRadius = (_LayersTex[layerPos2[20] + int2(i, 3)] + _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
+                        float otherRadius = min(_LayersTex[layerPos2[20] + int2(i, 3)],
+                            _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
                         float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
 
                         // if (px.x == 1)

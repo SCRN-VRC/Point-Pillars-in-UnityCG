@@ -8,7 +8,7 @@
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+12" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Overlay+14" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Blend Off
         Cull Front
 
@@ -41,7 +41,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _IndexTex;
             Texture2D<float> _LayersTex;
             float4 _LayersTex_TexelSize;
@@ -83,16 +83,19 @@
                 clip(renderArea ? 1.0 : -1.0);
 
                 px -= renderPos.xy;
-                uint2 idXY;
-                uint width = _IndexTex_TexelSize.z;
-                idXY.x = px.x % width;
-                idXY.y = px.x / width;
-                float2 myConfClass = _IndexTex[idXY].xz;
-                int index = _LayersTex[layerPos2[22] + int2(px.x, 0)];
 
+                int index = _LayersTex[layerPos2[22] + int2(px.x, 0)];
                 if (index < 0) return -1.0;
 
+                uint2 idXY;
+                uint width = _IndexTex_TexelSize.z;
+                idXY.x = index % width;
+                idXY.y = index / width;
+                float2 myConfClass = _IndexTex[idXY].xz;
+
                 float o = _LayersTex[layerPos2[20] + int2(index, px.y - 2)];
+
+                //if (all(px == uint2(1, 2))) buffer[0] = _IndexTex[idXY].y;
 
                 switch(px.y)
                 {

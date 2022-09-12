@@ -1538,6 +1538,13 @@ public:
                     l35b[i] = j;
                 }
             }
+            //if (i == 139481)
+            //{
+            //    printf("%lf, %lf, %lf\n", reshape2to3(l28, 3, i, 0),
+            //        reshape2to3(l28, 3, i, 1),
+            //        reshape2to3(l28, 3, i, 2));
+            //    printf("%d\n", l35b[i]);
+            //}
         }
 
         auto p = sort_permutation(l34,

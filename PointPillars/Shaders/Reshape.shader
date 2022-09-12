@@ -41,7 +41,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _InputTex;
             Texture2D<float> _LayersTex;
             float4 _LayersTex_TexelSize;
@@ -99,7 +99,16 @@
                         }
                     }
 
-                    //if (id == 281123) buffer[0] = data;
+                    // if (id == 139481)
+                    // {
+                    //     buffer[0] = float4
+                    //     (
+                    //         reshape2to3(_InputTex, 10, uint4(3, 3, 248, 216), 3, id, 0),
+                    //         reshape2to3(_InputTex, 10, uint4(3, 3, 248, 216), 3, id, 1),
+                    //         reshape2to3(_InputTex, 10, uint4(3, 3, 248, 216), 3, id, 2),
+                    //         0
+                    //     );
+                    // }
                     return data;
                 }
 
