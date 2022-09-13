@@ -780,6 +780,11 @@ public:
                 }
             }
 
+            if (l == 4365)
+            {
+                printf("sum: %lf, %lf, %lf\n", sum[0], sum[1], sum[2]);
+            }
+
             delete[] sum;
         }
     }
@@ -792,6 +797,22 @@ public:
             for (int m = 0; m < pl2[l]; m++)
             {
                 cl[l][m] = pl1[l][m][ind] - ((float) pl0[l][2 - ind] * vx_size + offset);
+            }
+        }
+    }
+
+    void offsetPillarCenterDEBUG(float** cl, float*** pl1, int** pl0, int* pl2,
+        int l_max, int ind, float vx_size, float offset)
+    {
+        for (int l = 0; l < l_max; l++)
+        {
+            for (int m = 0; m < pl2[l]; m++)
+            {
+                cl[l][m] = pl1[l][m][ind] - ((float)pl0[l][2 - ind] * vx_size + offset);
+                //if (l == 4365 && m == 0)
+                //{
+                //    printf("%lf, %lf\n", pl1[l][m][ind], ((float)pl0[l][2 - ind] * vx_size + offset));
+                //}
             }
         }
     }
@@ -830,6 +851,10 @@ public:
                     
                     // relu
                     cl[l][m][n] = relu(cl[l][m][n]);
+                }
+
+                if (l == 4365 && m == 11) {
+                    printf("l == 4365 && m == 11: %lf, %lf, %lf, %lf\n", concat[0], concat[1], concat[2], concat[3]);
                 }
             }
         }
@@ -891,9 +916,40 @@ public:
                 // batch norm
                 s = batchNorm(s, gamma[k], beta[k], mean[k], var[k]);
                 // activation
-                s = relu(s);
+                //s = relu(s);
 
-                cl[k][l][m] = s;
+                cl[k][l][m] = s * 0.5f;
+            }
+        }
+    }
+
+    void conv3Stride2PadLeftDEBUG(float*** cl, float*** pl, float**** w,
+        float* gamma, float* beta, float* mean, float* var,
+        int l_max, int m_max, int n_max, int k)
+    {
+        for (int l = 0; l < l_max; l++)
+        {
+            for (int m = 0; m < m_max; m++)
+            {
+                float s = 0.0f;
+                int l0 = l * 2, l1 = l0 + 1, l2 = l0 + 2;
+                int m0 = m * 2, m1 = m0 + 1, m2 = m0 + 2;
+
+                // kernel
+                for (int n = 0; n < n_max; n++) {
+
+                    //s += padLayerUneven(pl, n, l1, m1);
+                    //s += padLayerUneven(pl, n, l1, m2);
+                    //s += padLayerUneven(pl, n, l2, m0);
+                    s += padLayerUneven(pl, n, l2, m1);
+                }
+
+                // batch norm
+                //s = batchNorm(s, gamma[k], beta[k], mean[k], var[k]);
+                // activation
+                //s = relu(s);
+
+                cl[k][l][m] = s * 0.5f;
             }
         }
     }
@@ -926,9 +982,9 @@ public:
                 // batch norm
                 s = batchNorm(s, gamma[k], beta[k], mean[k], var[k]);
                 // activation
-                s = relu(s);
+                //s = relu(s);
 
-                cl[k][l][m] = s;
+                cl[k][l][m] = s * 0.5f;
             }
         }
     }
@@ -1291,7 +1347,7 @@ public:
 
         // offsets to pillar centers
         // X
-        offsetPillarCenter(l4, l1, l0, l2, total_voxels, 0, voxel_size[0],
+        offsetPillarCenterDEBUG(l4, l1, l0, l2, total_voxels, 0, voxel_size[0],
             voxel_size[0] / 2.0f + coors_range[0]);
         // Y
         offsetPillarCenter(l5, l1, l0, l2, total_voxels, 1, voxel_size[1],
@@ -1303,18 +1359,41 @@ public:
 
         // max pool
         maxPoolLayer(l7, l6, total_voxels, 64, max_points);
-        
+
         // pillar scatter
         pillarScatter(l8, l7, l0, total_voxels, 64);
 
         // conv + batch norm + relu
         for (int k = 0; k < 64; k++) {
-            thread t(&pillar::conv3Stride2PadLeft, this, l9, l8, const3, const4, const5,
-                rm1, rv1, 248, 216, 64, k);
+            thread t(&pillar::conv3Stride2PadLeftDEBUG, this, l9, l8, const3, const4, const5,
+                rm1, rv1, 248, 216, 1, k);
             threads.push_back(move(t));
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        // 4365: 0, 233, 48
+        //for (int i = 0; i < max_voxels; i++)
+        //{
+        //    if (l0[i][2] == 48) printf("%d: %d, %d, %d\n", i, l0[i][0], l0[i][1], l0[i][2]);
+        //}
+
+        printf("%d\n", l2[4365]);
+        for (int i = 0; i < l2[4365]; i++)
+            printf("%lf, %lf, %lf, %lf\n", l1[4365][i][0], l1[4365][i][1], l1[4365][i][2], l1[4365][i][3]);
+        //for (int i = 0; i < 32; i++)
+        //    //printf("%lf, %lf, %lf\n", l3[4365][i][0], l3[4365][i][1], l3[4365][i][2]);
+        //    printf("%lf\n", l4[4365][i]);
+
+        //printf("l9: %lf\n", l9[0][116][24]);
+        //printf("l9: %lf\n", l9[32][116][24]);
+        //printf("l9: %lf\n", l9[63][116][24]);
+
+        //printf("l8: %lf\n", padLayerUneven(l8, 0, 0, 0));
+        //printf("l8: %lf\n", padLayerUneven(l8, 0, 232, 48));
+        //printf("l8: %lf\n", padLayerUneven(l8, 0, 233, 49));
+        //printf("l8: %lf\n", l8[0][233][48]);
+        return;
 
         // conv + batch norm + relu
         for (int k = 0; k < 64; k++) {
@@ -1351,6 +1430,10 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        printf("l13: %lf\n", l13[0][58][12]);
+        printf("l13: %lf\n", l13[64][58][12]);
+        printf("l13: %lf\n", l13[127][58][12]);
 
         // conv + batch norm + relu
         for (int k = 0; k < 128; k++) {
@@ -1406,6 +1489,10 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
+        printf("l19: %lf\n", l19[0][29][6]);
+        printf("l19: %lf\n", l19[128][29][6]);
+        printf("l19: %lf\n", l19[255][29][6]);
+
         // conv + batch norm + relu
         for (int k = 0; k < 256; k++) {
             thread t(&pillar::conv3Stride1PadEven, this, l20, l19, const36, const37, const38,
@@ -1451,6 +1538,11 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
+        printf("l24: %lf\n", l24[0][29][6]);
+        printf("l24: %lf\n", l24[128][29][6]);
+        printf("l24: %lf\n", l24[255][29][6]);
+        return;
+
         // conv transpose + batch norm + relu
         for (int k = 0; k < 128; k++) {
             thread t(&pillar::convTranspose1Stride1, this, l25, l12, const51, const52, const53,
@@ -1487,6 +1579,25 @@ public:
         }
         for (auto& th : threads) th.join();
         threads.clear();
+
+        //for (int i = 0; i < 248; i++)
+        //    for (int j = 0; j < 216; j++)
+        //        if (l29[33][i][j] > 0.0f) printf("%d %d, ", i, j);
+        //printf("l28: %lf\n", l28[6][116][24]);
+        //printf("l28: %lf\n", l28[7][116][24]);
+        //printf("l28: %lf\n", l28[8][116][24]);
+
+        //printf("l25: %lf\n", l25[0][116][24]);
+        //printf("l25: %lf\n", l25[64][116][24]);
+        //printf("l25: %lf\n", l25[127][116][24]);
+
+        //printf("l26: %lf\n", l26[0][116][24]);
+        //printf("l26: %lf\n", l26[64][116][24]);
+        //printf("l26: %lf\n", l26[127][116][24]);
+
+        //printf("l27: %lf\n", l27[0][116][24]);
+        //printf("l27: %lf\n", l27[64][116][24]);
+        //printf("l27: %lf\n", l27[127][116][24]);
 
         // bbox_pred
         // conv + bias
@@ -1606,7 +1717,7 @@ int main()
 {
     std::string PATHWEIGHTS = "D:/Storage/3dObjDetect/PointPillars/pretrained/pillar.bytes";
     std::string PATHMEANVAR = "D:/Storage/3dObjDetect/PointPillars/pretrained/rmv.bytes";
-    std::string PATHINPUT = "D:/Storage/3dObjDetect/PointPillars/dataset/kitti/testing/velodyne/000000.bin";
+    std::string PATHINPUT = "D:/Storage/3dObjDetect/PointPillars/dataset/kitti/testing/velodyne/000009.bin";
 
     pillar pointPillar = pillar(PATHWEIGHTS, PATHMEANVAR, PATHINPUT);
     pointPillar.forwardProp();

@@ -42,7 +42,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
             Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
@@ -147,10 +147,9 @@
                     s += getConst(_WeightsTex, 61, uint2(k, 0));
                     s = sigmoid(s);
 
-                    // if (l == 133 && m == 191 && k == 17)
-                    // {
-                    //     buffer[0] = s * 100;
-                    // }
+                    // if (k == 6 && l == 116 && m == 24) buffer[0][0] = s;
+                    // if (k == 7 && l == 116 && m == 24) buffer[0][1] = s;
+                    // if (k == 8 && l == 116 && m == 24) buffer[0][2] = s;
 
                     return s;
                 }

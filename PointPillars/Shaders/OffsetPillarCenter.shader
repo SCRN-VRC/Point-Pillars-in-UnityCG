@@ -43,7 +43,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _ControllerTex;
@@ -93,6 +93,11 @@
 
                     float coords = _CoordsTex[px][_ID] * voxel_size[_ID] +
                         voxel_size[_ID] * 0.5 + coors_range[_ID];
+
+                    // if (_ID == 0 && all(px == uint2(218 + 31, 83)))
+                    // {
+                    //     buffer[0] = float4(val, coords, val - coords, 0);
+                    // }
 
                     return val - coords;
                 }

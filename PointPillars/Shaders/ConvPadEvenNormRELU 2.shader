@@ -46,7 +46,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
             Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
@@ -133,11 +133,6 @@
                             getConst2(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 2));
                     }
 
-                    // if (l == 110 && m == 106 && k == 127 && _PrevCurLayerIDLoop.y == 6)
-                    // {
-                    //     buffer[0] = s;
-                    // }
-
                     s = batchNorm(
                         s,
                         getConst(_WeightsTex, _WeightNormMeanVar.y, uint2(k, 0)),
@@ -147,9 +142,11 @@
 
                     s = relu(s);
 
-                    // if (l == 51 && m == 32 && k == 223 && _PrevCurLayerIDLoop.y == 16)
+                    // if (_PrevCurLayerIDLoop.y == 16)
                     // {
-                    //     buffer[0] = s;
+                    //     if (k == 0 && l == 29 && m == 6) buffer[0][0] = s * 0.5;
+                    //     if (k == 128 && l == 29 && m == 6) buffer[0][1] = s * 0.5;
+                    //     if (k == 255 && l == 29 && m == 6) buffer[0][2] = s * 0.5;
                     // }
 
                     return s;

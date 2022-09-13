@@ -133,11 +133,6 @@
                             getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 2));
                     }
 
-                    // if (l == 110 && m == 106 && k == 127 && _PrevCurLayerIDLoop.y == 6)
-                    // {
-                    //     buffer[0] = s;
-                    // }
-
                     s = batchNorm(
                         s,
                         getConst(_WeightsTex, _WeightNormMeanVar.y, uint2(k, 0)),
@@ -147,9 +142,9 @@
 
                     s = relu(s);
 
-                    // if (l == 109 && m == 107 && k == 127 && _PrevCurLayerIDLoop.y == 10)
+                    // if (k == 115 && l == 101 && m == 85 && _PrevCurLayerIDLoop.y == 10)
                     // {
-                    //     buffer[0] = s;
+                    //     buffer[0] = s * 10;
                     // }
 
                     return s;

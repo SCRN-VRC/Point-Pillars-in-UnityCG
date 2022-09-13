@@ -81,7 +81,7 @@
                 //float loopCount = _ControllerTex[txSortInputLoop];
                 float totalCount = round((1 << 18) * _ActiveTexelMap.Load(int3(0, 0, 9)));
                 //float tc2 = round((1 << 18) * _ActiveTexelMap2.Load(int3(0, 0, 9)));
-
+                //buffer[0] = float4(totalCount, tc2, 0, 0);
                 float curID = px.x + px.y * _InputTex_TexelSize.z;
 
                 if (curID < totalCount)

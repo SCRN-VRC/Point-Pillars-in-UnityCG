@@ -30,7 +30,7 @@ public class BakeTestData : EditorWindow
         if (GUILayout.Button("Bake!") && source0 != null) {
             string path = AssetDatabase.GetAssetPath(source0);
             int fileDir = path.LastIndexOf("/");
-            SavePath1 = path.Substring(0, fileDir) + "/000000.asset";
+            SavePath1 = path.Substring(0, fileDir) + "/000009.asset";
             OnGenerateTexture();
         }
     }
@@ -71,7 +71,7 @@ public class BakeTestData : EditorWindow
         BinaryReader br0 = new BinaryReader(s0);
 
         // First texture
-        writeBlock(tex, br0, 125635, 0, 0, 512);
+        writeBlock(tex, br0, 115275, 0, 0, 512);
     }
 }
 

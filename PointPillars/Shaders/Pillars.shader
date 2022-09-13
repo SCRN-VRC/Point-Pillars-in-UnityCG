@@ -43,7 +43,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _InputTex;
             Texture2D<float4> _OrigTex;
             Texture2D<float> _LayersTex;
@@ -99,6 +99,12 @@
                         uint2 IDPos;
                         IDPos.x = ((uint) lookupID) % dWidth;
                         IDPos.y = ((uint) lookupID) / dWidth;
+
+                        // if (all(px == uint2(218, 83)) && layer == 0)
+                        // {
+                        //     buffer[0] = _OrigTex[IDPos];
+                        // }
+
                         return _OrigTex[IDPos][layer];
                     }
                     return MAX_FLOAT;

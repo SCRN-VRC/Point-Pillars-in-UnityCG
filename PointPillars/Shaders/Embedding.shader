@@ -44,7 +44,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _WeightsTex;
@@ -88,7 +88,7 @@
 
                 if (layerHash % primes[2] == 0)
                 {
-                    //px -= renderPos.xy;
+                    px -= renderPos.xy;
 
                     uint id = getIDs(_LayersTex, px % layerPos1[4].zw);
                     if (id == 0) return 0;
@@ -133,6 +133,14 @@
                         {
                             s += concat[i] * getConst(_WeightsTex, 0, uint2(i, n));
                         }
+
+                        // if (all(px == uint2(74, 1421)))
+                        // {
+                        //     buffer[0] = float4(getL3(_LayersTex, uint3(idUV, 0)),
+                        //         getL3(_LayersTex, uint3(idUV, 1)),
+                        //         getL3(_LayersTex, uint3(idUV, 2)),
+                        //     0);
+                        // }
                     }
 
                     s = batchNorm(
@@ -143,11 +151,6 @@
                         getMeanVar(_WeightsTex, 1, n));
 
                     s = relu(s);
-
-                    // if (all(coords.yx == uint2(189, 77)) && n == 63 && m == 0)
-                    // {
-                    //     buffer[0] = float4(s.xxx, m);
-                    // }
 
                     return s;
                 }

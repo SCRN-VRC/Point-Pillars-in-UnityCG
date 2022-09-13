@@ -41,7 +41,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
             Texture2D<float> _LayersTex;
             float4 _ControllerTex_TexelSize;
@@ -119,10 +119,10 @@
 
                 // buffer[0] = float4
                 // (
-                //     _LayersTex[layerPos2[23] + int2(6, 2)],
-                //     _LayersTex[layerPos2[23] + int2(6, 3)],
-                //     _LayersTex[layerPos2[23] + int2(6, 4)],
-                //     _LayersTex[layerPos2[23] + int2(6, 1)]
+                //     _LayersTex[layerPos2[23] + int2(0, 0)],
+                //     _LayersTex[layerPos2[23] + int2(0, 1)],
+                //     _LayersTex[layerPos2[23] + int2(0, 2)],
+                //     _LayersTex[layerPos2[23] + int2(0, 3)]
                 // );
 
                 //buffer[0] = predictCount;

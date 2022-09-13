@@ -61,6 +61,7 @@
                 o.uv = v.uv;
                 o.color = float4(0, 0, 0, 0);
                 o.frontFace = 0.0;
+                
                 uint count = getCount(_ControllerTex);
                 uint id = UNITY_ACCESS_INSTANCED_PROP(Props, _Index);
 
@@ -77,11 +78,10 @@
 
                     float4 posRot = getPredictionSizeRotation(_DataTex, id);
                     float3 newVert = v.vertex.xyz * posRot.xzy;
-                    pR(newVert.zx, UNITY_PI * 0.5 - posRot.w);
+                    pR(newVert.zx, UNITY_PI * 1.5 - posRot.w);
 
                     float3 pos = getPredictionPosition(_DataTex, id);
-                    pos.xyz = float3(-pos.y, pos.z, pos.x);
-                    pos.y = -pos.y;
+                    pos.xyz = float3(-pos.y, -pos.z, pos.x);
                     newVert += pos;
                     o.vertex = UnityObjectToClipPos(float4(newVert, 1.0));
                 }

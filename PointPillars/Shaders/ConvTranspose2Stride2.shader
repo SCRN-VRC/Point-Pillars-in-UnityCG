@@ -43,7 +43,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
             Texture2D<float> _InputTex;
             Texture2D<float> _WeightsTex;
@@ -120,10 +120,9 @@
 
                     s = relu(s);
 
-                    // if (l == 207 && m == 135 && k == 89)
-                    // {
-                    //     buffer[0] = s;
-                    // }
+                    // if (k == 0 && l == 116 && m == 24) buffer[0][0] = s;
+                    // if (k == 64 && l == 116 && m == 24) buffer[0][1] = s;
+                    // if (k == 127 && l == 116 && m == 24) buffer[0][2] = s;
 
                     return s;
                 }

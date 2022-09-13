@@ -46,7 +46,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
             Texture2D<float> _WeightsTex;
             Texture2D<float> _ControllerTex;
@@ -100,6 +100,7 @@
                     uint l0 = l * 2, l1 = l0 + 1, l2 = l0 + 2;
                     uint m0 = m * 2, m1 = m0 + 1, m2 = m0 + 2;
 
+
                     for (uint n = 0; n < _PrevCurLayerIDLoop.w; n++) {
                         s += dot(
                             float4(
@@ -132,7 +133,6 @@
                         s += padLayerUneven(_LayersTex, _PrevCurLayerIDLoop.x, _LayerOffsets, uint3(l2, m2, n)) *
                             getConst(_WeightsTex, _WeightNormMeanVar.x, uint4(k, n, 2, 2));
                     }
-
                     s = batchNorm(
                         s,
                         getConst(_WeightsTex, _WeightNormMeanVar.y, uint2(k, 0)),
@@ -142,9 +142,23 @@
 
                     s = relu(s);
 
-                    // if (l == 51 && m == 32 && k == 223 && _PrevCurLayerIDLoop.y == 11)
+                    // if (_PrevCurLayerIDLoop.y == 1)
                     // {
-                    //     buffer[0] = s;
+                    //     // if (k == 0 && l == 116 && m == 24) buffer[0][0] = s * 0.5;
+                    //     // if (k == 32 && l == 116 && m == 24) buffer[0][1] = s * 0.5;
+                    //     // if (k == 63 && l == 116 && m == 24) buffer[0][2] = s * 0.5;
+                    //     // buffer[0] = float4(
+                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(232, 48, 0)),
+                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(232, 48, 32)),
+                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(232, 48, 63)),
+                    //     //     0
+                    //     // );
+                    //     // buffer[0] = float4(
+                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(233, 48, 0)),
+                    //     //     _LayersTex[uint2(233, 48)],
+                    //     //     0,
+                    //     //     0
+                    //     // );
                     // }
 
                     return s;

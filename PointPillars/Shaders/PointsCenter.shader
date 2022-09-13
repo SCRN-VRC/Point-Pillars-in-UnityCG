@@ -43,7 +43,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _ControllerTex;
@@ -71,12 +71,11 @@
                 return o;
             }
 
-            float gridSum(uint2 px, uint2 voxel, uint layer, uint dWidth, bool increment)
+            float gridSum(uint2 px, uint2 voxel, inout float count, uint layer, uint dWidth, bool increment)
             {
                 uint id = px.x + px.y * dWidth;
                 float sum = 0.0;
                 uint searchID = id;
-                uint count = 0;
 
                 while (searchID > 0 && count <= MAX_POINTS)
                 {
@@ -117,10 +116,18 @@
                     uint2 px2 = uint2(pxm, px.y);
                     uint2 curVoxel = _CoordsTex[px2].xy;
 
-                    float val = gridSum(px2, curVoxel, layer, dWidth, false) +
-                        gridSum(px2, curVoxel, layer, dWidth, true) + curVal;
+                    float count = 0.0;
+                    float val = gridSum(px2, curVoxel, count, layer, dWidth, false) +
+                        gridSum(px2, curVoxel, count, layer, dWidth, true) + curVal;
 
-                    float voxCount = _CounterTex[curVoxel];
+                    if (all(curVoxel == uint2(48, 233)))
+                    {
+                        if (layer == 0) buffer[0][0] = val;
+                        if (layer == 1) buffer[0][1] = val;
+                        if (layer == 2) buffer[0][2] = val;
+                    }
+
+                    float voxCount = min(_CounterTex[curVoxel], MAX_POINTS);
                     val = curVal - (val / voxCount);
 
                     return val;

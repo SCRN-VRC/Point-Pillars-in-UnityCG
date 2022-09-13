@@ -41,7 +41,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
             Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
@@ -91,6 +91,12 @@
                     {
                         maxPool = max(maxPool, getL6(_LayersTex, uint4(px, m, n)));
                     }
+
+                    // if (all(px == uint2(74, 13)) && m == 0)
+                    // {
+                    //     buffer[0][0] = getL6(_LayersTex, uint4(px, m, 11));
+                    //     buffer[0][2] = maxPool;
+                    // }
 
                     return maxPool;
                 }

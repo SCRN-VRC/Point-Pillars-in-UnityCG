@@ -29,7 +29,7 @@
 
             #include "PointPillarsInclude.cginc"
 
-            //RWStructuredBuffer<float4> buffer : register(u1);
+            RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _InputTex;
@@ -54,8 +54,8 @@
 
                 uint2 px;
                 const uint DataWidth = _InputTex_TexelSize.z;
-                px.x = triID % DataWidth;
-                px.y = triID / DataWidth;
+                px.x = floor(triID % DataWidth);
+                px.y = floor(triID / DataWidth);
                 uint m = px.x / layerPos1[4].z;
 
                 uint2 idUV = px % layerPos1[4].zw;
@@ -69,6 +69,18 @@
                 float2 coords = _CoordsTex[idUV].yx;
                 float data = _InputTex[layerPos1[6] + px];
 
+                // if (coords.x == 233 && coords.y == 48)
+                // {
+                //     if (m == 0) buffer[0][0] == data;
+                //     if (m == 32) buffer[0][1] == data;
+                //     if (m == 63) buffer[0][2] == data;
+                // }
+
+                // if (m > 0) return;
+                // if (data < 1.0) return;
+                // if (coords.x > 233 || coords.y > 48) return;
+                // buffer[0] = float4(px, m, 0);
+
                 coords.x = coords.x + (float) ((m % 8) * 496);
                 coords.y = coords.y + (float) ((m / 8) * 432);
 
@@ -78,6 +90,7 @@
                 coords.y = 1.0 - coords.y;
                 #endif
                 coords.xy = coords.xy * 2.0 - 1.0;
+
                 v2f o;
                 o.pos = float4(coords.xy, 1, 1);
                 o.data = data;

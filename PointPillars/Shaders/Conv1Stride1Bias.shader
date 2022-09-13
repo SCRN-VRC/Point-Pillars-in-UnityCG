@@ -148,9 +148,12 @@
                     // bias
                     s += getConst(_WeightsTex, _LayerAreaOffsets.z + 1, uint2(k, 0));
 
-                    // if (l == 133 && m == 191 && k == 11 && _LayerAreaOffsets.x == 12)
+                    // if (k == 33 && l == 202)
                     // {
-                    //     buffer[0] = s;
+                    //     if (m == 136) buffer[0][0] = s * 1000;
+                    //     if (m == 140) buffer[0][1] = s * 1000;
+                    //     if (m == 144) buffer[0][2] = s * 1000;
+                    //     if (m == 148) buffer[0][3] = s * 1000;
                     // }
 
                     return s;
