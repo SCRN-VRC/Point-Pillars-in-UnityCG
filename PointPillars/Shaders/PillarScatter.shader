@@ -29,7 +29,7 @@
 
             #include "PointPillarsInclude.cginc"
 
-            RWStructuredBuffer<float4> buffer : register(u1);
+            //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _CoordsTex;
             Texture2D<float> _LayersTex;
             Texture2D<float> _InputTex;

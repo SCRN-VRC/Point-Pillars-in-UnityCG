@@ -43,7 +43,7 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            RWStructuredBuffer<float4> buffer : register(u1);
+            //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _InputTex;
             Texture2D<float4> _OrigTex;
             Texture2D<float> _LayersTex;
