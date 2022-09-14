@@ -144,9 +144,9 @@
 
                     // if (_PrevCurLayerIDLoop.y == 16)
                     // {
-                    //     if (k == 0 && l == 29 && m == 6) buffer[0][0] = s * 0.5;
-                    //     if (k == 128 && l == 29 && m == 6) buffer[0][1] = s * 0.5;
-                    //     if (k == 255 && l == 29 && m == 6) buffer[0][2] = s * 0.5;
+                    //     if (k == 0 && l == 29 && m == 6) buffer[0][0] = s * 0.75;
+                    //     if (k == 128 && l == 29 && m == 6) buffer[0][1] = s * 0.75;
+                    //     if (k == 255 && l == 29 && m == 6) buffer[0][2] = s * 0.75;
                     // }
 
                     return s;

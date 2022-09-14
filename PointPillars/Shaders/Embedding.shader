@@ -12,14 +12,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+4" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -134,12 +134,9 @@
                             s += concat[i] * getConst(_WeightsTex, 0, uint2(i, n));
                         }
 
-                        // if (all(px == uint2(74, 1421)))
+                        // if (all(px == uint2(458, 1165)))
                         // {
-                        //     buffer[0] = float4(getL3(_LayersTex, uint3(idUV, 0)),
-                        //         getL3(_LayersTex, uint3(idUV, 1)),
-                        //         getL3(_LayersTex, uint3(idUV, 2)),
-                        //     0);
+                        //     buffer[0] = float4(idUV, 0, 0);
                         // }
                     }
 

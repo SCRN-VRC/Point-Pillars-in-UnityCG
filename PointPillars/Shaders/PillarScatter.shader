@@ -76,10 +76,10 @@
                 //     if (m == 63) buffer[0][2] == data;
                 // }
 
-                // if (m > 0) return;
-                // if (data < 1.0) return;
+                // if (m != 3) return;
                 // if (coords.x > 233 || coords.y > 48) return;
-                // buffer[0] = float4(px, m, 0);
+                // if (data < 1.0) return;
+                // buffer[0] = float4(data, px, m);
 
                 coords.x = coords.x + (float) ((m % 8) * 496);
                 coords.y = coords.y + (float) ((m / 8) * 432);

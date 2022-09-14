@@ -11,14 +11,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+2" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -100,9 +100,9 @@
                         IDPos.x = ((uint) lookupID) % dWidth;
                         IDPos.y = ((uint) lookupID) / dWidth;
 
-                        // if (all(px == uint2(218, 83)) && layer == 0)
+                        // if (all(px == uint2(227, 83)) && layer == 0)
                         // {
-                        //     buffer[0] = _OrigTex[IDPos];
+                        //     buffer[0] = float4(IDPos, 0, 0);
                         // }
 
                         return _OrigTex[IDPos][layer];

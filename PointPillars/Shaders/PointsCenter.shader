@@ -11,14 +11,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+2" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -120,12 +120,12 @@
                     float val = gridSum(px2, curVoxel, count, layer, dWidth, false) +
                         gridSum(px2, curVoxel, count, layer, dWidth, true) + curVal;
 
-                    if (all(curVoxel == uint2(48, 233)))
-                    {
-                        if (layer == 0) buffer[0][0] = val;
-                        if (layer == 1) buffer[0][1] = val;
-                        if (layer == 2) buffer[0][2] = val;
-                    }
+                    // if (all(curVoxel == uint2(48, 233)))
+                    // {
+                    //     if (layer == 0) buffer[0][0] = val;
+                    //     if (layer == 1) buffer[0][1] = val;
+                    //     if (layer == 2) buffer[0][2] = val;
+                    // }
 
                     float voxCount = min(_CounterTex[curVoxel], MAX_POINTS);
                     val = curVal - (val / voxCount);

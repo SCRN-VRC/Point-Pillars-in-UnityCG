@@ -76,12 +76,11 @@
                     }
                     o.frontFace = v.vertex.z > 0.0 ? 1.0 : 0.0;
 
-                    float4 posRot = getPredictionSizeRotation(_DataTex, id);
-                    float3 newVert = v.vertex.xyz * posRot.xzy;
-                    pR(newVert.zx, UNITY_PI * 1.5 - posRot.w);
+                    float4 sizeRot = getPredictionSizeRotation(_DataTex, id);
+                    float3 newVert = v.vertex.xyz * sizeRot.xyz;
+                    pR(newVert.zx, sizeRot.w);
 
                     float3 pos = getPredictionPosition(_DataTex, id);
-                    pos.xyz = float3(-pos.y, -pos.z, pos.x);
                     newVert += pos;
                     o.vertex = UnityObjectToClipPos(float4(newVert, 1.0));
                 }

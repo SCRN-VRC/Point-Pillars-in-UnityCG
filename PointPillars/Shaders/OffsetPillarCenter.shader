@@ -11,14 +11,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+3" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -94,7 +94,7 @@
                     float coords = _CoordsTex[px][_ID] * voxel_size[_ID] +
                         voxel_size[_ID] * 0.5 + coors_range[_ID];
 
-                    // if (_ID == 0 && all(px == uint2(218 + 31, 83)))
+                    // if (_ID == 0 && all(px == uint2(227, 83)))
                     // {
                     //     buffer[0] = float4(val, coords, val - coords, 0);
                     // }

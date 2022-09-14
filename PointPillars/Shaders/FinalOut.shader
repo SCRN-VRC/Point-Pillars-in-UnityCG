@@ -72,6 +72,11 @@
                 return val - floor(val / period + offset) * period;
             }
 
+            static const uint mapToUnity[9] =
+            {
+                0, 1, 3, 4, 2, 5, 7, 6, 8
+            };
+
             float frag (v2f i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
@@ -93,7 +98,7 @@
                 idXY.y = index / width;
                 float2 myConfClass = _IndexTex[idXY].xz;
 
-                float o = _LayersTex[layerPos2[20] + int2(index, px.y - 2)];
+                float o = _LayersTex[layerPos2[20] + int2(index, mapToUnity[px.y] - 2)];
 
                 //if (all(px == uint2(1, 2))) buffer[0] = _IndexTex[idXY].y;
 
@@ -101,11 +106,16 @@
                 {
                     case 0: return myConfClass.x;
                     case 1: return myConfClass.y;
+                    case 2:
+                    case 3: o = -o; break;
+                    case 4: o = o - 1; break; // Unity fix, move back 1 unit in Z
                     case 8:
                     {
                         float dir = _LayersTex[layerPos2[18] + int2(index, 0)];
                         o = limit_period(o, 1.0, UNITY_PI);
                         o += (1.0 - dir) * UNITY_PI;
+                        // Unity fix
+                        o = UNITY_PI * 1.5 - o;
                         return o;
                     }
                 }
