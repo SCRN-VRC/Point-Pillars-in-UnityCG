@@ -4,6 +4,7 @@
     {
         _ControllerTex ("Controller", 2D) = "black" {}
         _DataTex ("Data Texture", 2D) = "black"
+        _BBoxOffset ("Box Position Offset", Vector) = (0, 0, 0, 0)
         _Index ("Index", Int) = 0
     }
     SubShader
@@ -42,6 +43,7 @@
             RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
             Texture2D<float> _DataTex;
+            float3 _BBoxOffset;
 
             UNITY_INSTANCING_BUFFER_START(Props)
                 UNITY_DEFINE_INSTANCED_PROP(int, _Index)
@@ -77,7 +79,7 @@
                     o.frontFace = v.vertex.z > 0.0 ? 1.0 : 0.0;
 
                     float4 sizeRot = getPredictionSizeRotation(_DataTex, id);
-                    float3 newVert = v.vertex.xyz * sizeRot.xyz;
+                    float3 newVert = (v.vertex.xyz - _BBoxOffset) * sizeRot.xyz;
                     pR(newVert.zx, sizeRot.w);
 
                     float3 pos = getPredictionPosition(_DataTex, id);

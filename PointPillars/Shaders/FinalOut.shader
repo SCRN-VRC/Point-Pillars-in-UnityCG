@@ -108,7 +108,6 @@
                     case 1: return myConfClass.y;
                     case 2:
                     case 3: o = -o; break;
-                    case 4: o = o - 1; break; // Unity fix, move back 1 unit in Z
                     case 8:
                     {
                         float dir = _LayersTex[layerPos2[18] + int2(index, 0)];
