@@ -79,11 +79,11 @@
                     o.frontFace = v.vertex.z > 0.0 ? 1.0 : 0.0;
 
                     float4 sizeRot = getPredictionSizeRotation(_DataTex, id);
-                    float3 newVert = (v.vertex.xyz - _BBoxOffset) * sizeRot.xyz;
+                    float3 newVert = v.vertex.xyz * sizeRot.xyz;
                     pR(newVert.zx, sizeRot.w);
 
                     float3 pos = getPredictionPosition(_DataTex, id);
-                    newVert += pos;
+                    newVert += pos - _BBoxOffset;
                     o.vertex = UnityObjectToClipPos(float4(newVert, 1.0));
                 }
 

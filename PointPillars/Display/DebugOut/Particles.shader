@@ -124,7 +124,7 @@ Shader "PointPillars/Display/GPUParticles"
                 idUV.y = primitiveID / 512;
 
                 float4 pos = _MainTex[idUV];
-                pos.xyz = float3(pos.y, pos.z, pos.x);
+                pos.xyz = float3(-pos.y, pos.z, pos.x);
 
                 if (all(pos.xyz == 0..xxx)) return;
 
