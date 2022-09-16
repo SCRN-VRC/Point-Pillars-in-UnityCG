@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/DepthToObjPos"
+﻿/*
+    Uses _CameraDepthTexture to output world position per pixel
+    to be used as Lidar input data
+*/
+
+Shader "PointPillars/DepthToObjPos"
 {
     Properties
     {

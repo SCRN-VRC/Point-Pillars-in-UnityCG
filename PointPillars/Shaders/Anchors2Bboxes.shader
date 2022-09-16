@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/Anchors2Bboxes"
+﻿/*
+    Add the predicted offsets to the grid anchors
+*/
+
+Shader "PointPillars/Anchors2Bboxes"
 {
     Properties
     {

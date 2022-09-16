@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/Pillars"
+﻿/*
+    Move the actual lidar data into the voxelized grid that can
+    contain up to MAX_POINTS called "pillars"
+*/
+
+Shader "PointPillars/Pillars"
 {
     Properties
     {
@@ -92,6 +97,7 @@
                     uint layer = px.x / dWidth;
                     px.x = px.x % dWidth;
 
+                    // use the reference ID that we saved b4
                     float lookupID = _InputTex[px].w;
 
                     if (lookupID < MAX_FLOAT)
@@ -105,6 +111,8 @@
                         //     buffer[0] = float4(IDPos, 0, 0);
                         // }
 
+                        // as long as it's not invalid, save the data into 
+                        // the "pillars"
                         return _OrigTex[IDPos][layer];
                     }
                     return MAX_FLOAT;

@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/CompactOutput"
+﻿/*
+    The network outputs mostly 0s. To save compute, we filter out the low scores
+    and only sort the actual predictions.
+*/
+
+Shader "PointPillars/CompactOutput"
 {
     Properties
     {

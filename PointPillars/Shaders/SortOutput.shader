@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/SortOutput"
+﻿/*
+    After sorting, this shader only saves the final output at frame _LoopTexelMaxCount.
+*/
+
+Shader "PointPillars/SortOutput"
 {
     Properties
     {

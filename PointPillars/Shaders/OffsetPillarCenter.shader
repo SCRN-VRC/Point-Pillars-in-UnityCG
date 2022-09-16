@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/OffsetPillarCenter"
+﻿/*
+    How far away the current pixel is from its pillar center
+*/
+
+Shader "PointPillars/OffsetPillarCenter"
 {
     Properties
     {

@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/PointsCenter"
+﻿/*
+    Add up xyz of all points in pillar group and divide by the count
+*/
+
+Shader "PointPillars/PointsCenter"
 {
     Properties
     {
@@ -71,12 +75,14 @@
                 return o;
             }
 
+            // lazy search, keep added until we hit a different group
             float gridSum(uint2 px, uint2 voxel, inout float count, uint layer, uint dWidth, bool increment)
             {
                 uint id = px.x + px.y * dWidth;
                 float sum = 0.0;
                 uint searchID = id;
 
+                // we know the max # can't go over MAX_POINTS
                 while (searchID > 0 && count <= MAX_POINTS)
                 {
                     searchID = increment ? searchID + 1 : searchID - 1;
@@ -84,6 +90,7 @@
                     uint2 searchPos;
                     searchPos.x = searchID % dWidth;
                     searchPos.y = searchID / dWidth;
+                    // if the next point is in a different pillar group
                     if (any(uint2(_CoordsTex[searchPos].xy) != voxel)) break;
                     sum += getL1(_LayersTex, uint3(searchPos, layer));
                 }
@@ -117,6 +124,7 @@
                     uint2 curVoxel = _CoordsTex[px2].xy;
 
                     float count = 0.0;
+                    // add up the pixels b4 and after current pixel
                     float val = gridSum(px2, curVoxel, count, layer, dWidth, false) +
                         gridSum(px2, curVoxel, count, layer, dWidth, true) + curVal;
 
@@ -127,6 +135,7 @@
                     //     if (layer == 2) buffer[0][2] = val;
                     // }
 
+                    // get the average
                     float voxCount = min(_CounterTex[curVoxel], MAX_POINTS);
                     val = curVal - (val / voxCount);
 

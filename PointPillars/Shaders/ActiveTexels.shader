@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/ActiveTexels"
+﻿/*
+    Active texel map for data compaction
+    https://github.com/d4rkc0d3r/CompactSparseTextureDemo
+*/
+
+Shader "PointPillars/ActiveTexels"
 {
     Properties
     {
@@ -8,14 +13,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM

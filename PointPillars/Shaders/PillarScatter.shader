@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/PillarScatter"
+﻿/*
+    To encode spacial information, we move the features back into
+    the grid of pillars after a few layers of convolutions
+*/
+
+Shader "PointPillars/PillarScatter"
 {
     Properties
     {
@@ -68,18 +73,6 @@
                 
                 float2 coords = _CoordsTex[idUV].yx;
                 float data = _InputTex[layerPos1[6] + px];
-
-                // if (coords.x == 233 && coords.y == 48)
-                // {
-                //     if (m == 0) buffer[0][0] == data;
-                //     if (m == 32) buffer[0][1] == data;
-                //     if (m == 63) buffer[0][2] == data;
-                // }
-
-                // if (m != 3) return;
-                // if (coords.x > 233 || coords.y > 48) return;
-                // if (data < 1.0) return;
-                // buffer[0] = float4(data, px, m);
 
                 coords.x = coords.x + (float) ((m % 8) * 496);
                 coords.y = coords.y + (float) ((m / 8) * 432);

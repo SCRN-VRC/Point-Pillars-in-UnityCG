@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/CompactBBox"
+﻿/*
+    Lazy way of compacting the data yet again after NMS
+*/
+
+Shader "PointPillars/CompactBBox"
 {
     Properties
     {
@@ -77,10 +81,12 @@
                 px -= renderPos.xy;
 
                 uint count = 0;
+                // loop through all 100 predictions, skip empty
                 for (int i = 0; i < 100; i++)
                 {
                     int index = _LayersTex[layerPos2[21] + int2(i, 0)];
                     count = index >= 0 ? count + 1 : count;
+                    // the nth index returns the nth non empty element
                     if (count == px.x + 1) return index;
                 }
                 return -1.0;

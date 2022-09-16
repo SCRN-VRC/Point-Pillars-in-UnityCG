@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/ConvPadEvenNormRELU"
+﻿/*
+    Reusing the backbone of a 2D single shot image classifier convolutions.
+*/
+
+Shader "PointPillars/ConvPadEvenNormRELU"
 {
     Properties
     {

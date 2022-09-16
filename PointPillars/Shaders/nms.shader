@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/NMS"
+﻿/*
+    Non maximum suppression, remove overlapping predictions
+*/
+
+Shader "PointPillars/NMS"
 {
     Properties
     {

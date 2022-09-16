@@ -1,6 +1,11 @@
 #ifndef __POINT_PILLARS__
 #define __POINT_PILLARS__
 
+/*
+    Baked weights
+    x, y, width, height
+*/
+
 static const uint4 weightsPos[106] =
 {
     2432, 1536, 9, 64,       // const0
@@ -111,6 +116,11 @@ static const uint4 weightsPos[106] =
     2688, 1628, 128, 1,       // rv19
 };
 
+/*
+    Output layers 1 and 2
+    x, y, width, height
+*/
+
 static const uint4 layerPos1[16] = 
 {
     0, 4096, 2048, 512,       // l1
@@ -130,6 +140,11 @@ static const uint4 layerPos1[16] =
     5952, 6896, 1736, 432,       // l32
     5952, 7328, 1736, 432,       // l33
 };
+
+/*
+    Output layers 3 and 4
+    x, y, width, height
+*/
 
 static const uint4 layerPos2[24] =
 {
@@ -213,6 +228,11 @@ static const uint disperseArray[189] =
     128, 64, 32, 16, 8, 4, 2, 1, 0
 };
 
+/*
+    Unique ids for layers
+    Used to enable multiple layers at the same time
+*/
+
 static const uint primes[31] =
 {
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
@@ -220,6 +240,10 @@ static const uint primes[31] =
     73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
     127
 };
+
+/*
+    Constants for point pillar network
+*/
 
 static const float coors_range[6] =
     { 0.0f, -39.68f, -3.0f, 69.12f, 39.68f, 1.0f };

@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/ConvPadEvenNormRELU 2"
+﻿/*
+    Reusing the backbone of a 2D single shot image classifier convolutions.
+    The only difference this layer has is a different method to get weight
+    values because of how it was baked.
+*/
+
+Shader "PointPillars/ConvPadEvenNormRELU 2"
 {
     Properties
     {

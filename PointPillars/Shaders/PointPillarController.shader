@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/PointPillarController"
+﻿/*
+    Logic to keep track of which network layer to run so it's
+    not running all layers every frame. Slower but less GPU 
+    intensive.
+*/
+
+Shader "PointPillars/PointPillarController"
 {
     Properties
     {
@@ -84,9 +90,11 @@
 
                 float col = 0.0;
 
+                // Init sorting loop at MAX_LOOP, that's when it copies new input
                 sortInputLoop = (_Time.y < 0.1) ?
                     MAX_LOOP : mod(sortInputLoop + 1.0, MAX_LOOP + 1.0);
 
+                // Mimic "threading" behavior to run multiple layers per frame
                 layerThread = sortInputLoop == MAX_LOOP ?
                     mod(layerThread + 1.0, 2.0) : layerThread;
                 layerThread = (_Time.y < 0.1) ? 0.0 : layerThread;
@@ -94,21 +102,26 @@
                 [unroll]
                 for (int i = 0; i < 2; i++)
                 {
+                    // increment counters of current thread
                     counters[i] = (counters[i] >= MAX_LAYERS) ?
                         MAX_LAYERS : counters[i] + 1.0;
                     counters[i] = (_Time.y < 0.1) ?
                         MAX_LAYERS : counters[i];
                     if ((int) layerThread == i && sortInputLoop == MAX_LOOP)
                     {
+                        // reset thread when loop at end
                         counters[i] = 0.0;
                     }
                 }
 
+                // unique layer ids using primes
                 layerHash = primes[(uint) counters[0]] * primes[(uint) counters[1]];
 
+                // second sorting loop for prediction outputs
                 sortConfLoop = (_Time.y < 0.1) ?
                     2.0 : mod(sortConfLoop + 1.0, MAX_CONF_LOOP + 1.0);
 
+                // prediction output count
                 float predictCount = 0.0;
                 float conf = _LayersTex[layerPos2[23].xy];
                 while (conf > 0.0 && predictCount <= 100)

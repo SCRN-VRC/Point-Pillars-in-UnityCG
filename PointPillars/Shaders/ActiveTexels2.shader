@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/ActiveTexels2"
+﻿/*
+    Active texel map for data compaction
+    https://github.com/d4rkc0d3r/CompactSparseTextureDemo
+*/
+
+Shader "PointPillars/ActiveTexels2"
 {
     Properties
     {

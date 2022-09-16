@@ -1,8 +1,15 @@
-﻿Shader "PointPillars/ObjToIntensity"
+﻿/*
+    Anchor position to convert world space of the lidar data
+    into object space. Corresponding game object should be 
+    1 unit high for best results.
+*/
+
+Shader "PointPillars/ObjToIntensity"
 {
     Properties
     {
         _ObjPosTex ("Object Position Texture", 2D) = "black" {}
+        _Intensity ("Lidar Intensity", Float) = 0.15
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -43,6 +50,7 @@
             Texture2D<float4> _ObjPosTex;
             float4 _ObjPosTex_TexelSize;
             float _MaxDist;
+            float _Intensity;
 
             UNITY_INSTANCING_BUFFER_START(Props)
             UNITY_INSTANCING_BUFFER_END(Props)
@@ -70,11 +78,15 @@
 
                 uint2 px = i.uv.xy * _ObjPosTex_TexelSize.zw;
                 float3 pos1 = mul(unity_WorldToObject, _ObjPosTex[px]);
+                
+                // ignore points too close
                 if (pos1.z < 0.0) return 1e6;
 
                 // convert Unity coords into what the network's trained for
                 pos1.xyz = float3(pos1.z, -pos1.x, pos1.y);
-                return float4(pos1, 0.1);
+
+                // just return 0.15 for lidar intensity
+                return float4(pos1, _Intensity);
             }
             ENDCG
         }

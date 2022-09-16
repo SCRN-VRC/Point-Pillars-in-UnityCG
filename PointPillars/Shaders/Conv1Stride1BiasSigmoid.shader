@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/Conv1Stride1BiasSigmoid"
+﻿/*
+    Concatenate the three output layers of the repurposed image classifer together
+    to predict a confidence value for each class
+*/
+
+Shader "PointPillars/Conv1Stride1BiasSigmoid"
 {
     Properties
     {

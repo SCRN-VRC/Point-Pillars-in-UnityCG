@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/AnchorGenerator"
+﻿/*
+    Like the original single shot image classifiers, each grid has a center point
+    and the network predicts the offset from a given center point instead of
+    the raw position.
+*/
+
+Shader "PointPillars/AnchorGenerator"
 {
     Properties
     {

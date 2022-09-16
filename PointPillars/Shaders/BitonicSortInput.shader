@@ -1,4 +1,12 @@
-﻿Shader "PointPillars/BitonicSortInput"
+﻿/*
+    Bitonic merge sort
+    https://en.wikipedia.org/wiki/Bitonic_sorter
+
+    Sort the input to group points close together to form 
+    pillars.
+*/
+
+Shader "PointPillars/BitonicSortInput"
 {
     Properties
     {

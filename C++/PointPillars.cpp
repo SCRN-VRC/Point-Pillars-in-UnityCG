@@ -804,7 +804,13 @@ public:
         {
             for (int m = 0; m < m_max; m++)
             {
-                // features concatenated
+                /*
+                    The points in each pillar are then
+                    decorated (augmented) with r, xc, yc, zc, xp, yp where r
+                    is reflectance, the c subscript denotes distance to the arith-
+                    metic mean of all points in the pillar, and the p subscript
+                    denotes the offset from the pillar x, y center
+                */
                 float concat[9];
                 concat[0] = pl4[l][m];
                 concat[1] = pl5[l][m];
@@ -1307,6 +1313,11 @@ public:
         // pillar scatter
         pillarScatter(l8, l7, l0, total_voxels, 64);
 
+        /*
+            The start of the single shot image classifier network
+            repurposed for point pillars.
+        */
+
         // conv + batch norm + relu
         for (int k = 0; k < 64; k++) {
             thread t(&pillar::conv3Stride2PadLeft, this, l9, l8, const3, const4, const5,
@@ -1508,19 +1519,12 @@ public:
         for (auto& th : threads) th.join();
         threads.clear();
 
+        // generate anchors
+        // the network predicts an offset from one of the anchors instead
+        // of predicting the position directly
         anchorGenerator(l31, 0, 248, 216);
         anchorGenerator(l32, 1, 248, 216);
         anchorGenerator(l33, 2, 248, 216);
-
-        // bbox_cls_pred remapped
-        // reshape2to3(l28, 3, x, y)
-        // bbox_pred remapped
-        // reshape2to3(l29, 7, x, y)
-        // bbox_dir_cls_pred remapped
-        // reshape2to3(l30, 2, x, y)
-
-        // bbox_dir_cls_pred_max
-        // l30[x][0] > l30[x][1] ? 0 : 1;
         
         std::vector<int> l35b; // save class labels
 
@@ -1563,9 +1567,10 @@ public:
                 l39[i][j] = anchor2to3(l35[i], j);
         }
 
+        // add the anchors to the predictions
         anchors2Bboxes(l40, l39, l37, 100);
 
-        // nms
+        // non maximum suppression to get rid of overlaps
         std::vector<int> keep;
         for (int k = 0; k < 100; k++) {
             thread t(&pillar::nonMaxSupression, this, l40, l35b, &keep, k);

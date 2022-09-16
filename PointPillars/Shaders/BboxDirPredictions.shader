@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/BboxDirPredictions"
+﻿/*
+    Bounding box rotation offsets
+    Reshape the output again into a more readable format:
+    Extra rotation
+*/
+
+Shader "PointPillars/BboxDirPredictions"
 {
     Properties
     {

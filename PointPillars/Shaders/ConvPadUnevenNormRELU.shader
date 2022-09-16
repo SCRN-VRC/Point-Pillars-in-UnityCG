@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/ConvPadUnevenNormRELU"
+﻿/*
+    Reusing the backbone of a 2D single shot image classifier convolutions.
+*/
+
+Shader "PointPillars/ConvPadUnevenNormRELU"
 {
     Properties
     {
@@ -141,25 +145,6 @@
                         getMeanVar(_WeightsTex, _WeightNormMeanVar.w + 1, k));
 
                     s = relu(s);
-
-                    // if (_PrevCurLayerIDLoop.y == 1)
-                    // {
-                    //     // if (k == 0 && l == 116 && m == 24) buffer[0][0] = s;
-                    //     // if (k == 32 && l == 116 && m == 24) buffer[0][1] = s;
-                    //     // if (k == 63 && l == 116 && m == 24) buffer[0][2] = s;
-                    //     // buffer[0] = float4(
-                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(232, 48, 0)),
-                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(232, 48, 32)),
-                    //     //     getLayer2(_LayersTex, 0, _LayerOffsets, uint3(232, 48, 63)),
-                    //     //     0
-                    //     // );
-                    //     buffer[0] = float4(
-                    //         getLayer2(_LayersTex, 0, _LayerOffsets, uint3(233, 48, 3)),
-                    //         getLayer2(_LayersTex, 0, _LayerOffsets, uint3(233, 48, 4)),
-                    //         0,
-                    //         0
-                    //     );
-                    // }
 
                     return s;
                 }

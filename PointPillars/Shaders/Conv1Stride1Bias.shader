@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/Conv1Stride1Bias"
+﻿/*
+    Concatenate the three output layers of the repurposed image classifer together
+    to predict the location/scale/rotation
+*/
+
+Shader "PointPillars/Conv1Stride1Bias"
 {
     Properties
     {

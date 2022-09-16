@@ -1,4 +1,11 @@
-﻿Shader "PointPillars/FilterAndConvertPoints"
+﻿/*
+    Filter out points beyond specified range, round floating point data 
+    into ints for "pillars". Refer to the original PointPillars paper or 
+    Github README
+    https://arxiv.org/abs/1812.05784
+*/
+
+Shader "PointPillars/FilterAndConvertPoints"
 {
     Properties
     {
@@ -86,7 +93,6 @@
                         convertData[i] = floor((lidarData[i] - coors_range[i]) / voxel_size[i]);
                     // save a reference to the orignal points
                     convertData.w = px.x + px.y * _InputTex_TexelSize.z;
-                    
                 }
 
                 return convertData;

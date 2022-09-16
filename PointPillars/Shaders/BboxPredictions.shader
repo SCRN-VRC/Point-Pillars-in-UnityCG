@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/BboxPredictions"
+﻿/*
+    Bounding box predictions
+    Reshape the output again into a more readable format:
+    Location XYZ, Scale XYZ, Rotation
+*/
+
+Shader "PointPillars/BboxPredictions"
 {
     Properties
     {

@@ -38,7 +38,7 @@ Shader "PointPillars/Display/GPUParticles"
             #pragma vertex vert
             #pragma fragment frag
             #pragma geometry geom
-            
+
             #include "UnityCG.cginc"
 
             struct appdata
@@ -135,14 +135,14 @@ Shader "PointPillars/Display/GPUParticles"
                 float dy = (_Size ) / _ScreenParams.y * clipPos.w;
                 dx = clamp(dx, _MinSize, _MaxSize);
                 dy = clamp(dy, _MinSize, _MaxSize) * _ScreenParams.x / _ScreenParams.y;
-                
+
                 g2f OUT;
                 OUT.vertex = clipPos + float4(-dx,-dy,0,0); OUT.color = centerColor; OUT.uv = float2(0, 0); outStream.Append(OUT);
                 OUT.vertex = clipPos + float4( dx * 2,-dy,0,0); OUT.color = centerColor; OUT.uv = float2(2, 0); outStream.Append(OUT);
                 OUT.vertex = clipPos + float4(-dx, dy * 2,0,0); OUT.color = centerColor; OUT.uv = float2(0, 2); outStream.Append(OUT);
                 outStream.RestartStrip();
             }
-            
+
             fixed4 frag (g2f i) : SV_Target
             {
                 float4 col = tex2D(_ParticleTex, i.uv);

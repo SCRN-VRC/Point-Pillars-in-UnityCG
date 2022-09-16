@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/BboxAnchors"
+﻿/*
+    Get the precalcuated anchors for the pillars for each prediction
+*/
+
+Shader "PointPillars/BboxAnchors"
 {
     Properties
     {

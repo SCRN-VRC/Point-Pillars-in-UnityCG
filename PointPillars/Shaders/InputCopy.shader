@@ -10,14 +10,14 @@
     SubShader
     {
         Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
             
             CGPROGRAM
@@ -76,6 +76,7 @@
                 uint loopCount = _ControllerTex[txSortInputLoop];
                 uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
 
+                // copy input at specific time, else return last frame
                 return loopCount == MAX_LOOP ? _InputTex[px] : _LayersTex[px];
             }
             ENDCG

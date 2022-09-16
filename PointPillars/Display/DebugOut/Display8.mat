@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ObjToIntensity
-  m_Shader: {fileID: 4800000, guid: 2bb2be3bef04c3d4b873da63751bf3dd, type: 3}
+  m_Name: Display8
+  m_Shader: {fileID: 4800000, guid: 6ab1179095fc76b4ca2caa181b1af285, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -40,15 +40,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8400000, guid: f1691cf3370cc8a4bbd0c360dc0a45f7, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ObjPosTex:
-        m_Texture: {fileID: 8400000, guid: f1691cf3370cc8a4bbd0c360dc0a45f7, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -67,8 +63,6 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Intensity: 0.15
-    - _MaxDist: 0.02
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -76,10 +70,8 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Test: 0.15
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _CameraOffset: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

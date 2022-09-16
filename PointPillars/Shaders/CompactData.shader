@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/CompactData"
+﻿/*
+    Pack the voxel pillars, we only want a reference to the first point in the
+    the pillar group, this is to make sure we have a dense matrix with relevant
+    points close together
+*/
+
+Shader "PointPillars/CompactData"
 {
     Properties
     {

@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/MaxPool"
+﻿/*
+    Condense the embedding layer with a max pool
+*/
+
+Shader "PointPillars/MaxPool"
 {
     Properties
     {

@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/ConvTranspose1Stride1"
+﻿/*
+    Reshape the image classifier to be processed later for the three main ouputs:
+    class, confidence, bounding box location, bounding box scale, and rotation
+*/
+
+Shader "PointPillars/ConvTranspose1Stride1"
 {
     Properties
     {

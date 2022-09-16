@@ -1,4 +1,8 @@
-﻿Shader "PointPillars/BitonicSortConfidence"
+﻿/*
+    Sorts the compacted 32x32 confidence predictions.
+*/
+
+Shader "PointPillars/BitonicSortConfidence"
 {
     Properties
     {

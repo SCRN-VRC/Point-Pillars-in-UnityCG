@@ -1,4 +1,10 @@
-﻿Shader "PointPillars/Coords"
+﻿/*
+    Filter the points again, only MAX_POINTS allowed per pillar,
+    default implementation is 32, removes extra points if the 
+    maximum is exceeded.
+*/
+
+Shader "PointPillars/Coords"
 {
     Properties
     {
@@ -6,7 +12,6 @@
         _InputTex ("Input Texture", 2D) = "black" {}
         _CounterTex ("Counter Texture", 2D) = "black" {}
         _ActiveTexelMap ("Active Texel Map", 2D) = "black" {}
-        //_ActiveTexelMap2 ("Active Texel Map 2", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -78,22 +83,23 @@
                 clip(i.uv.z);
 
                 uint2 px = i.uv.xy * _InputTex_TexelSize.zw;
-                //float loopCount = _ControllerTex[txSortInputLoop];
                 float totalCount = round((1 << 18) * _ActiveTexelMap.Load(int3(0, 0, 9)));
-                //float tc2 = round((1 << 18) * _ActiveTexelMap2.Load(int3(0, 0, 9)));
-                //buffer[0] = float4(totalCount, tc2, 0, 0);
                 float curID = px.x + px.y * _InputTex_TexelSize.z;
 
+                // if the current point ID in the group is less than
+                // the total group count
                 if (curID < totalCount)
                 {
                     const uint dataWidth = _InputTex_TexelSize.z;
                     uint2 voxel = _InputTex[px].xy;
                     float voxelCount = _CounterTex[voxel];
 
+                    // if the total group count is above MAX_POINTS
                     if (voxelCount > MAX_POINTS)
                     {
                         uint searchID = curID;
                         float indexCount = 0;
+                        // find if current point is above MAX_POINTS
                         while (searchID > 0 && indexCount <= voxelCount)
                         {
                             searchID--;

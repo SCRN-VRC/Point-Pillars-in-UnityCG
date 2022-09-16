@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/Reshape"
+﻿/*
+    Save the best confidence and best class prediction with
+    a reference to the current pixel for later
+*/
+
+Shader "PointPillars/Reshape"
 {
     Properties
     {
@@ -98,17 +103,6 @@
                             data.z = j;
                         }
                     }
-
-                    // if (id == 150482)
-                    // {
-                    //     buffer[0] = float4
-                    //     (
-                    //         reshape2to3(_InputTex, 10, uint4(3, 3, 248, 216), 3, id, 0),
-                    //         reshape2to3(_InputTex, 10, uint4(3, 3, 248, 216), 3, id, 1),
-                    //         reshape2to3(_InputTex, 10, uint4(3, 3, 248, 216), 3, id, 2),
-                    //         0
-                    //     );
-                    // }
 
                     return data;
                 }

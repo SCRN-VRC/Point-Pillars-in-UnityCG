@@ -1,4 +1,9 @@
-﻿Shader "PointPillars/Embedding"
+﻿/*
+    The model uses 6 key features to represent each point per pillar.
+    This layer concatenates all 6 features with the 3 original points.
+*/
+
+Shader "PointPillars/Embedding"
 {
     Properties
     {
@@ -118,6 +123,14 @@
 
                     if (m < num_points)
                     {
+                        /*
+                            From Point Pillars paper:
+                            The points in each pillar are then
+                            decorated (augmented) with r, xc, yc, zc, xp, yp where r
+                            is reflectance, the c subscript denotes distance to the arith-
+                            metic mean of all points in the pillar, and the p subscript
+                            denotes the offset from the pillar x, y center
+                        */
                         float concat[9];
                         concat[0] = getL4(_LayersTex, idUV);
                         concat[1] = getL5(_LayersTex, idUV);
