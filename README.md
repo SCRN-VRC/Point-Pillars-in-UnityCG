@@ -1,6 +1,6 @@
 # PointPillars in UnityCG
 
-<img src="https://i.imgur.com/GZnRHLd.png" align="middle" width="500"/>
+<img src="https://i.imgur.com/GZnRHLd.png" align="middle"/>
 
 ### NOTE: This was built and tested with Unity 2019.4.32f1 using built-in render pipeline, there may be shader compatibility issues with other versions.
 
