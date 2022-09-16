@@ -9,7 +9,8 @@ Shader "PointPillars/ObjToIntensity"
     Properties
     {
         _ObjPosTex ("Object Position Texture", 2D) = "black" {}
-        _Intensity ("Lidar Intensity", Float) = 0.15
+        _OutputTex ("Output Texture Size", 2D) = "black" {}
+        _Reflectance ("Lidar Reflectance", Float) = 0.15
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
@@ -48,9 +49,11 @@ Shader "PointPillars/ObjToIntensity"
 
             //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _ObjPosTex;
+            Texture2D<float4> _OutputTex;
             float4 _ObjPosTex_TexelSize;
+            float4 _OutputTex_TexelSize;
+            float _Reflectance;
             float _MaxDist;
-            float _Intensity;
 
             UNITY_INSTANCING_BUFFER_START(Props)
             UNITY_INSTANCING_BUFFER_END(Props)
@@ -76,8 +79,15 @@ Shader "PointPillars/ObjToIntensity"
                 UNITY_SETUP_INSTANCE_ID(i);
                 clip(i.uv.z);
 
-                uint2 px = i.uv.xy * _ObjPosTex_TexelSize.zw;
-                float3 pos1 = mul(unity_WorldToObject, _ObjPosTex[px]);
+                uint2 px = i.uv.xy * _OutputTex_TexelSize.zw;
+                uint id = px.x + px.y * _OutputTex_TexelSize.z;
+
+                uint2 objPx;
+                const uint width = _ObjPosTex_TexelSize.z;
+                objPx.x = id % width;
+                objPx.y = id / width;
+
+                float3 pos1 = mul(unity_WorldToObject, _ObjPosTex[objPx]);
                 
                 // ignore points too close
                 if (pos1.z < 0.0) return 1e6;
@@ -85,8 +95,8 @@ Shader "PointPillars/ObjToIntensity"
                 // convert Unity coords into what the network's trained for
                 pos1.xyz = float3(pos1.z, -pos1.x, pos1.y);
 
-                // just return 0.15 for lidar intensity
-                return float4(pos1, _Intensity);
+                // just return 0.15 for lidar reflectance
+                return float4(pos1, _Reflectance);
             }
             ENDCG
         }

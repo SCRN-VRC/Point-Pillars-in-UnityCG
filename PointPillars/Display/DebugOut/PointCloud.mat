@@ -35,4 +35,5 @@ Material:
     - _Scale: 2
     - _Size: 10
     - _Speed: 1
-    m_Colors: []
+    m_Colors:
+    - _Color: {r: 1, g: 0, b: 1, a: 1}
