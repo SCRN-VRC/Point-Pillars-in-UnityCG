@@ -28,7 +28,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DataTex:
-        m_Texture: {fileID: 8400000, guid: c5f046f8971bed949abc8abb8290cda5, type: 2}
+        m_Texture: {fileID: 8400000, guid: c635da8c29c26e045ba6f2e5f016ed31, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -71,7 +71,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Index: -0.15
+    - _Index: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -83,6 +83,6 @@ Material:
     - _WireThickness: 100
     - _ZWrite: 1
     m_Colors:
-    - _BBoxOffset: {r: 0, g: 0.5, b: 15, a: 0}
+    - _BBoxOffset: {r: 0, g: 0.5, b: 5, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

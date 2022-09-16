@@ -5,7 +5,6 @@
         _ControllerTex ("Controller", 2D) = "black" {}
         _DataTex ("Data Texture", 2D) = "black"
         _BBoxOffset ("Box Position Offset", Vector) = (0, 0, 0, 0)
-        _Index ("Index", Int) = 0
     }
     SubShader
     {
@@ -18,8 +17,8 @@
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_instancing
             #pragma target 5.0
+            #pragma multi_compile_instancing
 
             #include "UnityCG.cginc"
             #include "../../Shaders/PointPillarsInclude.cginc"
@@ -40,14 +39,10 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            RWStructuredBuffer<float4> buffer : register(u1);
+            //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _ControllerTex;
             Texture2D<float> _DataTex;
             float3 _BBoxOffset;
-
-            UNITY_INSTANCING_BUFFER_START(Props)
-                UNITY_DEFINE_INSTANCED_PROP(int, _Index)
-            UNITY_INSTANCING_BUFFER_END(Props)
 
             void pR(inout float2 p, float a) {
                 p = cos(a)*p + sin(a) * float2(p.y, -p.x);
@@ -64,8 +59,10 @@
                 o.color = float4(0, 0, 0, 0);
                 o.frontFace = 0.0;
                 
+                #ifdef UNITY_INSTANCING_ENABLED
+
                 uint count = getCount(_ControllerTex);
-                uint id = UNITY_ACCESS_INSTANCED_PROP(Props, _Index);
+                uint id = UNITY_GET_INSTANCE_ID(v);
 
                 if (id < count)
                 {
@@ -85,8 +82,10 @@
                     float3 pos = getPredictionPosition(_DataTex, id);
                     newVert += pos - _BBoxOffset;
                     o.vertex = UnityObjectToClipPos(float4(newVert, 1.0));
-                }
 
+                }
+                #endif
+                
                 return o;
             }
 
