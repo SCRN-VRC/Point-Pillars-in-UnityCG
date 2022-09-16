@@ -69,6 +69,7 @@ Figure from the original PointPillars paper. The network begins by voxelizing th
 - [PointPillars: Fast Encoders for Object Detection from Point Clouds](https://arxiv.org/abs/1812.05784)
 - [A Simple PointPillars PyTorch Implenmentation](https://github.com/zhulf0804/PointPillars)
 - [Compact Sparse Texture Demo](https://github.com/d4rkc0d3r/CompactSparseTextureDemo)
+- [Quaternius Lowpoly Assets](https://www.patreon.com/posts/tutorials-on-all-61128248)
 
 ## Datasets
 - [KITTI 3D Object Detection Evaluation 2017](https://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d)
