@@ -1,26 +1,23 @@
-﻿Shader "PointPillars/BufferClear"
+﻿Shader "PointPillars/ClearScatter"
 {
     Properties
     {
-        _ControllerTex ("Controller Texture", 2D) = "black" {}
-        _MainTex ("Buffer", 2D) = "black" {}
-        _ClearArea ("Area to Clear", Int) = 0
-        _ClearIndex ("Layer Index to Clear", Int) = 30
+        _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.02
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
-        ZWrite Off
-        ZTest Always
+        Tags { "Queue"="Overlay+2" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Blend Off
         Cull Front
-        
+
         Pass
         {
             Lighting Off
             SeparateSpecular Off
+            ZTest Off
             Fog { Mode Off }
-            
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -43,12 +40,13 @@
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            Texture2D<float4> _MainTex;
-            Texture2D<float> _ControllerTex;
-            float4 _MainTex_TexelSize;
-            uint _ClearArea;
-            uint _ClearIndex;
+            //RWStructuredBuffer<float4> buffer : register(u1);
+            Texture2D<float> _LayersTex;
+            float4 _LayersTex_TexelSize;
             float _MaxDist;
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+            UNITY_INSTANCING_BUFFER_END(Props)
 
             v2f vert (appdata v)
             {
@@ -60,27 +58,23 @@
                 v.uv.y = 1-v.uv.y;
                 #endif
                 o.uv.xy = UnityStereoTransformScreenSpaceTex(v.uv);
-                o.uv.z = (distance(_WorldSpaceCameraPos,
-                    mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz) > _MaxDist) ?
-                    -1 : 1;
-                o.uv.z = unity_OrthoParams.w ? o.uv.z : -1;
+                o.uv.z = distance(_WorldSpaceCameraPos,
+                   mul(unity_ObjectToWorld, float4(0.0, 0.0, 0.0, 1.0)).xyz) > _MaxDist ? -1.0 : 1.0;
+                o.uv.z = unity_OrthoParams.w ? o.uv.z : -1.0;
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float frag (v2f i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
                 clip(i.uv.z);
 
-                uint2 px = i.uv.xy * _MainTex_TexelSize.zw;
-                uint4 renderPos = layerPos2[_ClearArea];
+                uint2 px = i.uv.xy * _LayersTex_TexelSize.zw;
+                uint4 renderPos = layerPos2[0];
                 bool renderArea = insideArea(renderPos, px);
-
-                uint layerHash = _ControllerTex[txLayerHash];
-                if (renderArea && (layerHash % primes[_ClearIndex] == 0)) return 0;
-
-                float4 col = _MainTex.Load(int3(i.uv.xy * _MainTex_TexelSize.zw, 0));
-                return col;
+                clip(renderArea ? 1.0 : -1.0);
+                
+                return 0;
             }
             ENDCG
         }

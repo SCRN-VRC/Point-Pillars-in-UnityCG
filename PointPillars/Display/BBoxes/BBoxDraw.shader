@@ -4,7 +4,8 @@
     {
         _ControllerTex ("Controller", 2D) = "black" {}
         _DataTex ("Data Texture", 2D) = "black"
-        _BBoxOffset ("Box Position Offset", Vector) = (0, 0, 0, 0)
+        _BBoxOffset ("Undo Root Position", Vector) = (0, 0, 0, 0)
+        _BBoxScale ("Undo Root Scale", Vector) = (1, 1, 1, 1)
     }
     SubShader
     {
@@ -43,6 +44,7 @@
             Texture2D<float> _ControllerTex;
             Texture2D<float> _DataTex;
             float3 _BBoxOffset;
+            float3 _BBoxScale;
 
             void pR(inout float2 p, float a) {
                 p = cos(a)*p + sin(a) * float2(p.y, -p.x);
@@ -62,7 +64,7 @@
                 #ifdef UNITY_INSTANCING_ENABLED
 
                 uint count = getCount(_ControllerTex);
-                uint id = UNITY_GET_INSTANCE_ID(v);
+                uint id = UNITY_GET_INSTANCE_ID(v) % 33;
 
                 if (id < count)
                 {
@@ -81,7 +83,7 @@
 
                     float3 pos = getPredictionPosition(_DataTex, id);
                     newVert += pos - _BBoxOffset;
-                    o.vertex = UnityObjectToClipPos(float4(newVert, 1.0));
+                    o.vertex = UnityObjectToClipPos(float4(newVert / _BBoxScale, 1.0));
 
                 }
                 #endif

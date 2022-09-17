@@ -96,13 +96,6 @@ Shader "PointPillars/MaxPool"
                         maxPool = max(maxPool, getL6(_LayersTex, uint4(px, m, n)));
                     }
 
-                    // if (all(px == uint2(74, 13)) && m == 3)
-                    // {
-                    //     buffer[0][0] = getL6(_LayersTex, uint4(px, m, 9));
-                    //     buffer[0][1] = floor(_Time.y * 0.5) % 32;
-                    //     buffer[0][2] = maxPool;
-                    // }
-
                     return maxPool;
                 }
 

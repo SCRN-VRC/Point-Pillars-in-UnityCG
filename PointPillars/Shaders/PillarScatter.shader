@@ -17,7 +17,7 @@ Shader "PointPillars/PillarScatter"
         Tags
         {
             "RenderType" = "Transparent"
-            "Queue" = "Overlay+2"
+            "Queue" = "Transparent+2000"
             "DisableBatching"="True"
         }
         Blend Off
@@ -54,8 +54,8 @@ Shader "PointPillars/PillarScatter"
             void geom(triangle v2f i[3], inout PointStream<v2f> pointStream, uint triID : SV_PrimitiveID)
             {
                 if (any(_ScreenParams.xy != abs(_LayersTex_TexelSize.zw))) return;
-                uint layerHash = _ControllerTex[txLayerHash];
-                if (layerHash % primes[3] != 0) return;
+                //uint layerHash = _ControllerTex[txLayerHash];
+                //if (layerHash % primes[3] != 0) return;
 
                 uint2 px;
                 const uint DataWidth = _InputTex_TexelSize.z;
