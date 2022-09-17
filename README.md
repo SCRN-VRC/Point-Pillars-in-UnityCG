@@ -10,6 +10,7 @@
 - [Setup](#setup)
 - [C++ Code](#c-code)
 - [Model Architecture](#model-architecture)
+- [GPU Implementation](#gpu-implementation)
 - [Resources](#resources)
 - [Datasets](#datasets)
 
@@ -28,7 +29,7 @@ The table above was directly lifted from the PointPillars paper. It shows how re
 ## Setup
 
 1. Either clone the repo or download from [Release](https://github.com/SCRN-VRC/Point-Pillars-in-UnityCG/releases).
-2. Drag and drop the prefab in the `Prefabs` folder into the scene.
+2. Drag and drop the prefab in the `Prefabs` folder into the scene. Or open up the scene that came with the package.
 3. Run the network in Playmode.
 
 The network outputs up to 100 predictions, only 33 of the bounding boxes are shown. Invalid predictions are returned as -1. All 100 predictions are rendered into `PointPillars\RenderTextures\Output3.renderTexture`. You can read it in a shader by importing the .cginc `PointPillars\Shaders\PointPillarsInclude.cginc`
@@ -65,10 +66,18 @@ The C++ code included with the repo is just an exact CPU clone of how PointPilla
 
 Figure from the original PointPillars paper. The network begins by voxelizing the lidar data into a 2D grid without bounding Z. Hence the name "pillars". This serves to condense the data into a dense matrix. Then it's fed into a classic 2D CNN classifier as the backbone, and ending with a single shot detector network structure, like YOLOv4.
 
+## GPU Implementation
+<img src="https://i.imgur.com/mnNYfS8.png" align="middle" width="500"/>
+
+The GPU implementation for VRChat consists of 40+ cameras rendering to about 1GB of render textures. Moving points into pillar voxels required using a bitonic merge sort and d4rk's compact sparse texture code. One million particles were used in a geometry shader to scatter extracted features into the dense matrix for the 2D CNN.
+
+PointPillars spits out 321408 predictions towards the end. But because most of the outputs are 0, they can be filtered with d4rk's compact sparse texture method into a 32x32 render texture and sorted again.
+
 ## Resources
 - [PointPillars: Fast Encoders for Object Detection from Point Clouds](https://arxiv.org/abs/1812.05784)
 - [A Simple PointPillars PyTorch Implenmentation](https://github.com/zhulf0804/PointPillars)
 - [Compact Sparse Texture Demo](https://github.com/d4rkc0d3r/CompactSparseTextureDemo)
+- [Bitonic Merge Sort](https://en.wikipedia.org/wiki/Bitonic_sorter)
 - [Quaternius Lowpoly Assets](https://www.patreon.com/posts/tutorials-on-all-61128248)
 
 ## Datasets
