@@ -10,7 +10,7 @@ Shader "PointPillars/AnchorGenerator"
     {
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _LayerAreaOffsets ("Current Layer Area, Split, Weights", Vector) = (0, 0, 0, 0)
-        _MaxDist ("Max Distance", Float) = 0.02
+        _MaxDist ("Max Distance", Float) = 0.2
     }
     SubShader
     {

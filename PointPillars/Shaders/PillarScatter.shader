@@ -47,13 +47,14 @@ Shader "PointPillars/PillarScatter"
                 float4 pos : SV_POSITION;
                 float data : TEXCOORD0;
             };
-            
+
             void empty() {}
 
             [maxvertexcount(1)]
             void geom(triangle v2f i[3], inout PointStream<v2f> pointStream, uint triID : SV_PrimitiveID)
             {
                 if (any(_ScreenParams.xy != abs(_LayersTex_TexelSize.zw))) return;
+
                 //uint layerHash = _ControllerTex[txLayerHash];
                 //if (layerHash % primes[3] != 0) return;
 
@@ -87,6 +88,7 @@ Shader "PointPillars/PillarScatter"
                 v2f o;
                 o.pos = float4(coords.xy, 1, 1);
                 o.data = data;
+
                 pointStream.Append(o);
             }
             

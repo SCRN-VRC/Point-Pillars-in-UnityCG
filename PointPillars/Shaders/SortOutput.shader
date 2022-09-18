@@ -10,7 +10,7 @@ Shader "PointPillars/SortOutput"
         _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _LoopTexelMaxCount ("Loop Texel Postion, Max Count", Vector) = (0, 0, 0, 0)
-        _MaxDist ("Max Distance", Float) = 0.02
+        _MaxDist ("Max Distance", Float) = 0.2
     }
     SubShader
     {

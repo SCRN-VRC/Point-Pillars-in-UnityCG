@@ -13,7 +13,7 @@ Shader "PointPillars/BitonicSortInput"
         _ControllerTex ("Controller Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _IndexOffset ("Index Offset", Int) = 0
-        _MaxDist ("Max Distance", Float) = 0.02
+        _MaxDist ("Max Distance", Float) = 0.2
     }
     SubShader
     {

@@ -13,7 +13,7 @@ Shader "PointPillars/ConvPadUnevenNormRELU"
         _LayerOffsets ("Prev Layer Split, Width, Height", Vector) = (0, 0, 0, 0)
         _CurOffsets ("Current Layer Split, Width, Height", Vector) = (0, 0, 0, 0)
         _WeightNormMeanVar ("Weight, Gamma, Beta, Mean/Variance", Vector) = (0, 0, 0, 0)
-        _MaxDist ("Max Distance", Float) = 0.02
+        _MaxDist ("Max Distance", Float) = 0.2
     }
     SubShader
     {

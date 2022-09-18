@@ -11,7 +11,7 @@ Shader "PointPillars/Pillars"
         _InputTex ("Input Image", 2D) = "black" {}
         _OrigTex ("Original Points Data", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
-        _MaxDist ("Max Distance", Float) = 0.02
+        _MaxDist ("Max Distance", Float) = 0.2
     }
     SubShader
     {

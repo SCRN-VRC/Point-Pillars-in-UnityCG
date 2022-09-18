@@ -10,7 +10,7 @@ Shader "PointPillars/FilterAndConvertPoints"
     Properties
     {
         _InputTex ("Input Image", 2D) = "black" {}
-        _MaxDist ("Max Distance", Float) = 0.02
+        _MaxDist ("Max Distance", Float) = 0.2
     }
     SubShader
     {
