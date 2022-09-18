@@ -7,7 +7,7 @@
     }
     SubShader
     {
-        Tags { "Queue"="Overlay+1" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Transparent" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Blend Off
         Cull Front
 
@@ -15,7 +15,7 @@
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

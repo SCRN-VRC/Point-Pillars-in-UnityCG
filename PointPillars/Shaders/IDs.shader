@@ -23,7 +23,7 @@ Shader "PointPillars/IDs"
 
         Pass
         {
-            ZTest Off
+            ZTest Always
 
             CGPROGRAM
             #pragma vertex empty

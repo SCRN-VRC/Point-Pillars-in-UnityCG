@@ -325,7 +325,7 @@ float getLayer1(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
     uint2 pos;
     pos.x = input.x + (input.z % off.x) * off.z;
     pos.y = input.y + (input.z / off.y) * off.w;
-    return tex[layerPos1[layer] + pos];
+    return tex[layerPos1[layer].xy + pos];
 }
 
 float getLayer2(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
@@ -333,7 +333,7 @@ float getLayer2(Texture2D<float> tex, uint layer, uint4 off, uint3 input)
     uint2 pos;
     pos.x = input.x + (input.z % off.x) * off.z;
     pos.y = input.y + (input.z / off.y) * off.w;
-    return tex[layerPos2[layer] + pos];
+    return tex[layerPos2[layer].xy + pos];
 }
 
 // mapping 2d -> 3d array
@@ -359,7 +359,7 @@ float padLayerEven(Texture2D<float> tex, uint layer, uint4 off, uint2 xyMax, uin
 
 float getConst(Texture2D<float> tex, uint index, uint2 off)
 {
-    return tex[weightsPos[index] + off];
+    return tex[weightsPos[index].xy + off];
 }
 
 float getConst(Texture2D<float> tex, uint index, uint4 off)
@@ -367,7 +367,7 @@ float getConst(Texture2D<float> tex, uint index, uint4 off)
     uint2 pos;
     pos.x = off.w + off.z * 3 + off.y * 9;
     pos.y = off.x;
-    return tex[weightsPos[index] + pos];
+    return tex[weightsPos[index].xy + pos];
 }
 
 float getConst2x2(Texture2D<float> tex, uint index, uint4 off)
@@ -375,7 +375,7 @@ float getConst2x2(Texture2D<float> tex, uint index, uint4 off)
     uint2 pos;
     pos.x = off.w + off.z * 2 + off.y * 4;
     pos.y = off.x;
-    return tex[weightsPos[index] + pos];
+    return tex[weightsPos[index].xy + pos];
 }
 
 float getConst4x4(Texture2D<float> tex, uint index, uint4 off)
@@ -383,7 +383,7 @@ float getConst4x4(Texture2D<float> tex, uint index, uint4 off)
     uint2 pos;
     pos.x = off.w + off.z * 4 + off.y * 16;
     pos.y = off.x;
-    return tex[weightsPos[index] + pos];
+    return tex[weightsPos[index].xy + pos];
 }
 
 float getConst2(Texture2D<float> tex, uint index, uint4 off)
@@ -391,12 +391,12 @@ float getConst2(Texture2D<float> tex, uint index, uint4 off)
     uint2 pos;
     pos.x = off.w + off.z * 3 + (off.y % 64) * 9;
     pos.y = off.x * 4 + off.y / 64;
-    return tex[weightsPos[index] + pos];
+    return tex[weightsPos[index].xy + pos];
 }
 
 float getMeanVar(Texture2D<float> tex, uint index, uint off)
 {
-    return tex[weightsPos[index + 66] + uint2(off, 0)];
+    return tex[weightsPos[index + 66].xy + uint2(off, 0)];
 }
 
 float getL1(Texture2D<float> tex, uint3 off)
@@ -404,12 +404,12 @@ float getL1(Texture2D<float> tex, uint3 off)
     uint2 pos;
     pos.x = off.x + off.z * 512;
     pos.y = off.y;
-    return tex[layerPos1[0] + pos];
+    return tex[layerPos1[0].xy + pos];
 }
 
 float getIDs(Texture2D<float> tex, uint2 off)
 {
-    return tex[layerPos1[4] + off];
+    return tex[layerPos1[4].xy + off];
 }
 
 float getL3(Texture2D<float> tex, uint3 off)
@@ -417,17 +417,17 @@ float getL3(Texture2D<float> tex, uint3 off)
     uint2 pos;
     pos.x = off.x + off.z * 512;
     pos.y = off.y;
-    return tex[layerPos1[1] + pos];
+    return tex[layerPos1[1].xy + pos];
 }
 
 float getL4(Texture2D<float> tex, uint2 off)
 {
-    return tex[layerPos1[2] + off];
+    return tex[layerPos1[2].xy + off];
 }
 
 float getL5(Texture2D<float> tex, uint2 off)
 {
-    return tex[layerPos1[3] + off];
+    return tex[layerPos1[3].xy + off];
 }
 
 float getL6(Texture2D<float> tex, uint4 off)
@@ -435,12 +435,12 @@ float getL6(Texture2D<float> tex, uint4 off)
     uint2 pos;
     pos.x = off.x + off.z * layerPos1[4].z;
     pos.y = off.y + off.w * layerPos1[4].w;
-    return tex[layerPos1[5] + pos];
+    return tex[layerPos1[5].xy + pos];
 }
 
 uint getCount(Texture2D<float> tex)
 {
-    return tex[txPredictCount];
+    return tex[txPredictCount.xy];
 }
 
 float2 getPredictionClass(Texture2D<float> tex, uint id)

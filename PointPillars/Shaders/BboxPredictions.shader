@@ -23,7 +23,7 @@ Shader "PointPillars/BboxPredictions"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

@@ -24,7 +24,7 @@ Shader "PointPillars/ConvTranspose2Stride2"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

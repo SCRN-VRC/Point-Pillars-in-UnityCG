@@ -25,7 +25,7 @@ Shader "PointPillars/BitonicSortInput"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

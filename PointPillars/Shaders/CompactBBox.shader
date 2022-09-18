@@ -19,7 +19,7 @@ Shader "PointPillars/CompactBBox"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

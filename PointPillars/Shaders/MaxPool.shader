@@ -20,7 +20,7 @@ Shader "PointPillars/MaxPool"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
 
             CGPROGRAM
@@ -90,13 +90,13 @@ Shader "PointPillars/MaxPool"
                     uint m = px.x / layerPos1[4].z;
                     px = px % layerPos1[4].zw;
 
-                    float maxPool = getL6(_LayersTex, uint4(px, m, 0));
+                    float output = getL6(_LayersTex, uint4(px, m, 0));
                     for (uint n = 1; n < MAX_POINTS; n++)
                     {
-                        maxPool = max(maxPool, getL6(_LayersTex, uint4(px, m, n)));
+                        output = max(output, getL6(_LayersTex, uint4(px, m, n)));
                     }
 
-                    return maxPool;
+                    return output;
                 }
 
                 return col;

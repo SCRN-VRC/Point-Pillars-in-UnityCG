@@ -25,7 +25,7 @@ Shader "PointPillars/CompactData"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

@@ -22,7 +22,7 @@ Shader "PointPillars/SortOutput"
         {
             Lighting Off
             SeparateSpecular Off
-            ZTest Off
+            ZTest Always
             Fog { Mode Off }
             
             CGPROGRAM

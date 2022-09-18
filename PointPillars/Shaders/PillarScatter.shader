@@ -24,7 +24,7 @@ Shader "PointPillars/PillarScatter"
 
         Pass
         {
-            ZTest Off
+            ZTest Always
 
             CGPROGRAM
             #pragma vertex empty
