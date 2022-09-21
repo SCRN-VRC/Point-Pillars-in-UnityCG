@@ -6,6 +6,7 @@ Shader "PointPillars/CompactBBox"
 {
     Properties
     {
+        _ControllerTex ("Controller Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.2
     }
@@ -46,6 +47,7 @@ Shader "PointPillars/CompactBBox"
 
             //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float> _LayersTex;
+            Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
             float _MaxDist;
 
@@ -78,18 +80,26 @@ Shader "PointPillars/CompactBBox"
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
 
-                px -= renderPos.xy;
+                float col = _LayersTex[px];
+                uint layerHash = _ControllerTex[txLayerHash];
 
-                uint count = 0;
-                // loop through all 100 predictions, skip empty
-                for (int i = 0; i < 100; i++)
+                if (layerHash % primes[31] == 0)
                 {
-                    int index = _LayersTex[layerPos2[21] + int2(i, 0)];
-                    count = index >= 0 ? count + 1 : count;
-                    // the nth index returns the nth non empty element
-                    if (count == px.x + 1) return index;
+                    px -= renderPos.xy;
+
+                    uint count = 0;
+                    // loop through all 100 predictions, skip empty
+                    for (int i = 0; i < 100; i++)
+                    {
+                        int index = _LayersTex[layerPos2[21] + int2(i, 0)];
+                        count = index >= 0 ? count + 1 : count;
+                        // the nth index returns the nth non empty element
+                        if (count == px.x + 1) return index;
+                    }
+                    return -1.0;
                 }
-                return -1.0;
+
+                return col;
             }
             ENDCG
         }

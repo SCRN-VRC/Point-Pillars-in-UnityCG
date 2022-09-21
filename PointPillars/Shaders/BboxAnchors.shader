@@ -6,6 +6,7 @@ Shader "PointPillars/BboxAnchors"
 {
     Properties
     {
+        _ControllerTex ("Controller Texture", 2D) = "black" {}
         _IndexTex ("Sorted Index Texture", 2D) = "black" {}
         _InputTex ("Input Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
@@ -50,6 +51,7 @@ Shader "PointPillars/BboxAnchors"
             Texture2D<float4> _IndexTex;
             Texture2D<float> _InputTex;
             Texture2D<float> _LayersTex;
+            Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
             float4 _IndexTex_TexelSize;
             float _MaxDist;
@@ -95,17 +97,23 @@ Shader "PointPillars/BboxAnchors"
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
 
-                //float col = _LayersTex[px];
+                float col = _LayersTex[px];
+                uint layerHash = _ControllerTex[txLayerHash];
 
-                px -= renderPos.xy;
-                uint2 idXY;
-                uint width = _IndexTex_TexelSize.z;
-                idXY.x = px.x % width;
-                idXY.y = px.x / width;
-                uint id = round(_IndexTex[idXY].y);
-                float o = anchor2to3(id, px.y);
+                if (layerHash % primes[30] == 0)
+                {
+                    px -= renderPos.xy;
+                    uint2 idXY;
+                    uint width = _IndexTex_TexelSize.z;
+                    idXY.x = px.x % width;
+                    idXY.y = px.x / width;
+                    uint id = round(_IndexTex[idXY].y);
+                    float o = anchor2to3(id, px.y);
 
-                return o;
+                    return o;
+                }
+
+                return col;
             }
             ENDCG
         }

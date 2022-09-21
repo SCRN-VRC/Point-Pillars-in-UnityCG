@@ -233,12 +233,12 @@ static const uint disperseArray[189] =
     Used to enable multiple layers at the same time
 */
 
-static const uint primes[31] =
+static const uint primes[35] =
 {
     2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
     31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
     73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
-    127
+    127, 131, 137, 139, 149
 };
 
 /*
@@ -269,7 +269,7 @@ static const float anchor_rotations[2] = { 0.0f, 1.57f };
 #define MAX_LOOP                                21
 #define MAX_CONF_LOOP                           5
 #define MAX_POINTS                              32
-#define MAX_LAYERS                              30
+#define MAX_LAYERS                              32
 
 #define txSortInputLoop                         uint2(0, 0)
 #define txLayerCounter0                         uint2(1, 0)

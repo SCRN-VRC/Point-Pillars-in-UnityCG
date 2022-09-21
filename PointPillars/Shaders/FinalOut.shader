@@ -2,6 +2,7 @@
 {
     Properties
     {
+        _ControllerTex ("Controller Texture", 2D) = "black" {}
         _IndexTex ("Sorted Index Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.2
@@ -44,6 +45,7 @@
             //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _IndexTex;
             Texture2D<float> _LayersTex;
+            Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
             float4 _IndexTex_TexelSize;
             float _MaxDist;
@@ -87,39 +89,45 @@
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
 
-                px -= renderPos.xy;
+                float col = _LayersTex[px];
+                uint layerHash = _ControllerTex[txLayerHash];
 
-                int index = _LayersTex[layerPos2[22] + int2(px.x, 0)];
-                if (index < 0) return -1.0;
-
-                uint2 idXY;
-                uint width = _IndexTex_TexelSize.z;
-                idXY.x = index % width;
-                idXY.y = index / width;
-                float2 myConfClass = _IndexTex[idXY].xz;
-
-                float o = _LayersTex[layerPos2[20] + int2(index, mapToUnity[px.y] - 2)];
-
-                //if (all(px == uint2(1, 2))) buffer[0] = _IndexTex[idXY].y;
-
-                switch(px.y)
+                if (layerHash % primes[32] == 0)
                 {
-                    case 0: return myConfClass.x;
-                    case 1: return myConfClass.y;
-                    case 2:
-                    case 3: o = -o; break;
-                    case 8:
+                    px -= renderPos.xy;
+
+                    int index = _LayersTex[layerPos2[22] + int2(px.x, 0)];
+                    if (index < 0) return -1.0;
+
+                    uint2 idXY;
+                    uint width = _IndexTex_TexelSize.z;
+                    idXY.x = index % width;
+                    idXY.y = index / width;
+                    float2 myConfClass = _IndexTex[idXY].xz;
+
+                    float o = _LayersTex[layerPos2[20] + int2(index, mapToUnity[px.y] - 2)];
+
+                    switch(px.y)
                     {
-                        float dir = _LayersTex[layerPos2[18] + int2(index, 0)];
-                        o = limit_period(o, 1.0, UNITY_PI);
-                        o += (1.0 - dir) * UNITY_PI;
-                        // Unity fix
-                        o = UNITY_PI * 1.5 - o;
-                        return o;
+                        case 0: return myConfClass.x;
+                        case 1: return myConfClass.y;
+                        case 2:
+                        case 3: o = -o; break;
+                        case 8:
+                        {
+                            float dir = _LayersTex[layerPos2[18] + int2(index, 0)];
+                            o = limit_period(o, 1.0, UNITY_PI);
+                            o += (1.0 - dir) * UNITY_PI;
+                            // Unity fix
+                            o = UNITY_PI * 1.5 - o;
+                            return o;
+                        }
                     }
+
+                    return o;
                 }
 
-                return o;
+                return col;
             }
             ENDCG
         }

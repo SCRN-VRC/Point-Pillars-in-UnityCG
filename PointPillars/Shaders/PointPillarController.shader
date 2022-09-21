@@ -94,32 +94,39 @@ Shader "PointPillars/PointPillarController"
                 sortInputLoop = (_Time.y < 0.1) ?
                     MAX_LOOP : mod(sortInputLoop + 1.0, MAX_LOOP + 1.0);
 
-                // Mimic "threading" behavior to run multiple layers per frame
-                layerThread = sortInputLoop == MAX_LOOP ?
-                    mod(layerThread + 1.0, 2.0) : layerThread;
-                layerThread = (_Time.y < 0.1) ? 0.0 : layerThread;
+                // // Mimic "threading" behavior to run multiple layers per frame
+                // layerThread = sortInputLoop == MAX_LOOP ?
+                //     mod(layerThread + 1.0, 2.0) : layerThread;
+                // layerThread = (_Time.y < 0.1) ? 0.0 : layerThread;
 
-                [unroll]
-                for (int i = 0; i < 2; i++)
-                {
-                    // increment counters of current thread
-                    counters[i] = (counters[i] >= MAX_LAYERS) ?
-                        MAX_LAYERS : counters[i] + 1.0;
-                    counters[i] = (_Time.y < 0.1) ?
-                        MAX_LAYERS : counters[i];
-                    if ((int) layerThread == i && sortInputLoop == MAX_LOOP)
-                    {
-                        // reset thread when loop at end
-                        counters[i] = 0.0;
-                    }
-                }
+                // [unroll]
+                // for (int i = 0; i < 2; i++)
+                // {
+                //     // increment counters of current thread
+                //     counters[i] = (counters[i] >= MAX_LAYERS) ?
+                //         MAX_LAYERS : counters[i] + 1.0;
+                //     counters[i] = (_Time.y < 0.1) ?
+                //         MAX_LAYERS : counters[i];
+                //     if ((int) layerThread == i && sortInputLoop == MAX_LOOP)
+                //     {
+                //         // reset thread when loop at end
+                //         counters[i] = 0.0;
+                //     }
+                // }
+
+                counters[0] = (counters[0] >= MAX_LAYERS) ?
+                        0 : counters[0] + 1.0;
 
                 // unique layer ids using primes
-                layerHash = primes[(uint) counters[0]] * primes[(uint) counters[1]];
+                layerHash = primes[(uint) counters[0]];
 
                 // second sorting loop for prediction outputs
                 sortConfLoop = (_Time.y < 0.1) ?
-                    2.0 : mod(sortConfLoop + 1.0, MAX_CONF_LOOP + 1.0);
+                    4.0 : mod(sortConfLoop + 1.0, MAX_CONF_LOOP + 1.0);
+
+                // only sort during this period, 4 is starting index
+                sortConfLoop = (counters[0] >= 23 && counters[0] <= 28) ?
+                    sortConfLoop : 4.0;
 
                 // prediction output count
                 float predictCount = 0.0;

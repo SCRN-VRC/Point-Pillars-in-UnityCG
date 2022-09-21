@@ -73,11 +73,14 @@ The GPU implementation for VRChat consists of 40+ cameras rendering to about 1GB
 
 PointPillars spits out 321408 predictions towards the end. But because most of the outputs are 0, they can be filtered with d4rk's compact sparse texture method into a 32x32 render texture and sorted again.
 
+The Non-maximum Suppression (NMS) method used at the end to remove duplicate bounding boxes was simplified in the GPU implementation because of how slow it already was. Instead of the normal [Rotation-robust Intersection over Union for 3D Object Detection](https://paperswithcode.com/paper/rotation-robust-intersection-over-union-for), I simply used a sphere intersection check on the shortest XY length of the bounding box. The original rotation-robust intersection implementation can be seen in the C++ code.
+
 ## Resources
 - [PointPillars: Fast Encoders for Object Detection from Point Clouds](https://arxiv.org/abs/1812.05784)
 - [A Simple PointPillars PyTorch Implenmentation](https://github.com/zhulf0804/PointPillars)
 - [Compact Sparse Texture Demo](https://github.com/d4rkc0d3r/CompactSparseTextureDemo)
 - [Bitonic Merge Sort](https://en.wikipedia.org/wiki/Bitonic_sorter)
+- [Rotation-robust Intersection over Union for 3D Object Detection](https://paperswithcode.com/paper/rotation-robust-intersection-over-union-for)
 - [Quaternius Lowpoly Assets](https://www.patreon.com/posts/tutorials-on-all-61128248)
 
 ## Datasets

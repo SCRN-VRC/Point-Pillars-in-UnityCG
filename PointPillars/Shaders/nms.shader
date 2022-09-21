@@ -6,6 +6,7 @@ Shader "PointPillars/NMS"
 {
     Properties
     {
+        _ControllerTex ("Controller Texture", 2D) = "black" {}
         _IndexTex ("Sorted Index Texture", 2D) = "black" {}
         _LayersTex ("Layers Texture", 2D) = "black" {}
         _MaxDist ("Max Distance", Float) = 0.2
@@ -48,6 +49,7 @@ Shader "PointPillars/NMS"
             //RWStructuredBuffer<float4> buffer : register(u1);
             Texture2D<float4> _IndexTex;
             Texture2D<float> _LayersTex;
+            Texture2D<float> _ControllerTex;
             float4 _LayersTex_TexelSize;
             float4 _IndexTex_TexelSize;
             float _MaxDist;
@@ -81,67 +83,68 @@ Shader "PointPillars/NMS"
                 bool renderArea = insideArea(renderPos, px);
                 clip(renderArea ? 1.0 : -1.0);
 
-                //float col = _LayersTex[px];
+                float col = _LayersTex[px];
+                uint layerHash = _ControllerTex[txLayerHash];
 
-                px -= renderPos.xy;
-                uint2 idXY;
-                uint width = _IndexTex_TexelSize.z;
-                idXY.x = px.x % width;
-                idXY.y = px.x / width;
-                float2 myConfClass = _IndexTex[idXY].xz;
-
-                if (myConfClass.x > 0.0)
+                if (layerHash % primes[31] == 0)
                 {
-                    float3 myCenter;
-                    myCenter.x = _LayersTex[layerPos2[20] + uint2(px.x, 0)];
-                    myCenter.y = _LayersTex[layerPos2[20] + uint2(px.x, 1)];
-                    myCenter.z = _LayersTex[layerPos2[20] + uint2(px.x, 2)];
-                    float myRadius = min(_LayersTex[layerPos2[20] + uint2(px.x, 3)],
-                        _LayersTex[layerPos2[20] + uint2(px.x, 4)]) * 0.5;
+                    px -= renderPos.xy;
+                    uint2 idXY;
+                    uint width = _IndexTex_TexelSize.z;
+                    idXY.x = px.x % width;
+                    idXY.y = px.x / width;
+                    float2 myConfClass = _IndexTex[idXY].xz;
 
-                    // if (px.x == 1)
-                    // {
-                    //     buffer[0] = float4(myCenter, myRadius);
-                    // }
-
-                    bool skip = false;
-                    for (int i = px.x - 1; i >= 0; i--)
+                    if (myConfClass.x > 0.0)
                     {
-                        idXY.x = i % width;
-                        idXY.y = i / width;
-                        float2 otherConfClass = _IndexTex[idXY].xz;
-                        // only same classes
-                        if (otherConfClass.y != myConfClass.y) continue;
+                        float3 myCenter;
+                        myCenter.x = _LayersTex[layerPos2[20] + uint2(px.x, 0)];
+                        myCenter.y = _LayersTex[layerPos2[20] + uint2(px.x, 1)];
+                        myCenter.z = _LayersTex[layerPos2[20] + uint2(px.x, 2)];
+                        float myRadius = min(_LayersTex[layerPos2[20] + uint2(px.x, 3)],
+                            _LayersTex[layerPos2[20] + uint2(px.x, 4)]) * 0.5;
 
-                        // simple sphere intersection test, i have a more detailed
-                        // implementation of "rotation robust intersection over union"
-                        // in my c++ code
-                        float3 otherCenter;
-                        otherCenter.x = _LayersTex[layerPos2[20] + int2(i, 0)];
-                        otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 1)];
-                        otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 2)];
+                        // if (px.x == 1)
+                        // {
+                        //     buffer[0] = float4(myCenter, myRadius);
+                        // }
 
-                        float otherRadius = min(_LayersTex[layerPos2[20] + int2(i, 3)],
-                            _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
-                        float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
-
-                        // something better and overlaps
-                        if (otherConfClass.x > myConfClass.x && overlap < 0.0)
+                        bool skip = false;
+                        for (int i = px.x - 1; i >= 0; i--)
                         {
-                            skip = true;
-                            break;
+                            idXY.x = i % width;
+                            idXY.y = i / width;
+                            float2 otherConfClass = _IndexTex[idXY].xz;
+                            // only same classes
+                            if (otherConfClass.y != myConfClass.y) continue;
+
+                            // simple sphere intersection test, i have a more detailed
+                            // implementation of "rotation robust intersection over union"
+                            // in my c++ code
+                            float3 otherCenter;
+                            otherCenter.x = _LayersTex[layerPos2[20] + int2(i, 0)];
+                            otherCenter.y = _LayersTex[layerPos2[20] + int2(i, 1)];
+                            otherCenter.z = _LayersTex[layerPos2[20] + int2(i, 2)];
+
+                            float otherRadius = min(_LayersTex[layerPos2[20] + int2(i, 3)],
+                                _LayersTex[layerPos2[20] + int2(i, 4)]) * 0.5;
+                            float overlap = distance(myCenter, otherCenter) - (myRadius + otherRadius);
+
+                            // something better and overlaps
+                            if (otherConfClass.x > myConfClass.x && overlap < 0.0)
+                            {
+                                skip = true;
+                                break;
+                            }
                         }
+
+                        return skip ? -1.0 : px.x;
                     }
 
-                    // if (px.x == 6)
-                    // {
-                    //     buffer[0] = float4(myConfClass.y, skip, myCenter.xy);
-                    // }
-
-                    return skip ? -1.0 : px.x;
+                    return -1.0;
                 }
 
-                return -1.0;
+                return col;
             }
             ENDCG
         }
