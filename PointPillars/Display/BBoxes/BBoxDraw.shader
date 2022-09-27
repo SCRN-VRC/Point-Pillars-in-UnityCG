@@ -38,6 +38,7 @@
                 float4 color : COLOR;
                 float frontFace : TEXCOORD1;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
+                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             //RWStructuredBuffer<float4> buffer : register(u1);
@@ -53,7 +54,9 @@
             v2f vert (appdata v)
             {
                 v2f o;
-                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_SETUP_INSTANCE_ID( v );
+                UNITY_INITIALIZE_OUTPUT( v2f, o );
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
                 UNITY_TRANSFER_INSTANCE_ID(v, o);
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
